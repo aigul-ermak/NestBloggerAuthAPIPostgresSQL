@@ -12,7 +12,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateUserUseCaseCommand } from './usecases/createUserUseCase';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private commandBus: CommandBus) {}
 

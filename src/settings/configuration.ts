@@ -21,9 +21,7 @@ const getConfig = (
     },
 
     databaseSettings: {
-      MONGO_CONNECTION_URI: environmentVariables.MONGO_CONNECTION_URI,
-      MONGO_CONNECTION_URI_FOR_TESTS:
-        environmentVariables.MONGO_CONNECTION_URI_FOR_TESTS,
+      DATABASE_URL: environmentVariables.DATABASE_URL,
     },
 
     environmentSettings: {
