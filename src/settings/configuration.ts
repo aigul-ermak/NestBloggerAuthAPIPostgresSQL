@@ -1,4 +1,6 @@
-export type EnvironmentVariable = { [key: string]: string | undefined };
+// export type EnvironmentVariable = { [key: string]: string | undefined };
+
+import { EnvironmentVariable } from './envType';
 
 export type ConfigurationType = ReturnType<typeof getConfig>;
 
@@ -52,10 +54,12 @@ const getConfig = (
 };
 
 export default () => {
-  const environmentVariables = process.env;
+  // const environmentVariables: EnvironmentVariable = process.env;
+  const environmentVariables = process.env as unknown as EnvironmentVariable;
 
-  const currentEnvironment: Environments =
-    environmentVariables.ENV as Environments;
+  const currentEnvironment: Environments = environmentVariables.ENV
+    ? (environmentVariables.ENV as Environments)
+    : Environments.DEVELOPMENT;
 
   return getConfig(environmentVariables, currentEnvironment);
 };
