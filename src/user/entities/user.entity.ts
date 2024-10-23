@@ -8,6 +8,9 @@ export class User {
   @Column()
   login: string;
 
+  // @OneToMany(() => Post, (p) => p.user)
+  // post: Post;
+
   @Column()
   email: string;
 
