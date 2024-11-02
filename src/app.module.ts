@@ -1,12 +1,14 @@
-import {Module} from '@nestjs/common';
-import {AppController} from './settings/app.controller';
-import {AppService} from './settings/app.service';
-import {TypeOrmModule} from '@nestjs/typeorm';
-import {User} from './user/entities/user.entity';
-import {ConfigModule, ConfigService} from '@nestjs/config';
-import {UserModule} from './user/user.module';
+import { Module } from '@nestjs/common';
+import { AppController } from './settings/app.controller';
+import { AppService } from './settings/app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './user/entities/user.entity';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UserModule } from './user/user.module';
 import configuration from './settings/configuration';
 import { TestingAllDataModule } from './testing-all-data/testing-all-data.module';
+import { PostModule } from './post/post.module';
+import { Post } from './post/entities/post.entity';
 
 @Module({
   imports: [
@@ -20,12 +22,13 @@ import { TestingAllDataModule } from './testing-all-data/testing-all-data.module
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         url: configService.get('DATABASE_URL'),
-        entities: [User],
+        entities: [User, Post],
         synchronize: true,
       }),
     }),
     UserModule,
     TestingAllDataModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],
