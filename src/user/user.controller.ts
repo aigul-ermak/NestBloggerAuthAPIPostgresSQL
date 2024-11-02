@@ -3,11 +3,11 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateUserUseCaseCommand } from './usecases/createUserUseCase';
 
-@Controller('users')
+@Controller('sa')
 export class UserController {
   constructor(private commandBus: CommandBus) {}
 
-  @Post()
+  @Post('users')
   create(@Body() createUserDto: CreateUserDto) {
     return this.commandBus.execute(new CreateUserUseCaseCommand(createUserDto));
   }
