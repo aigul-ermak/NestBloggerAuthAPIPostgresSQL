@@ -2,9 +2,9 @@ import { ConflictException } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
+import { UsersRepository } from '../repositories/users.repository';
+import { UsersQueryRepository } from '../repositories/users-query.repository';
 
 export class CreateUserUseCaseCommand {
   constructor(public createUserDto: CreateUserDto) {}
@@ -15,14 +15,14 @@ export class CreateUserUseCase
   implements ICommandHandler<CreateUserUseCaseCommand>
 {
   constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
+    private usersRepository: UsersRepository,
+    private usersQueryRepository: UsersQueryRepository,
   ) {}
 
   async execute(command: CreateUserUseCaseCommand): Promise<User> {
     const { login, email, password } = command.createUserDto;
 
-    const existingUser = await this.usersRepository.findOne({
+    const existingUser = await this.usersQueryRepository.findOne({
       where: { email },
     });
 
@@ -36,9 +36,9 @@ export class CreateUserUseCase
     const newUser = this.usersRepository.create({
       login,
       email,
-      password: passwordHashed,
+      passwordHash: passwordHashed,
     });
 
-    return this.usersRepository.save(newUser);
+    return await this.usersRepository.save(await newUser);
   }
 }
