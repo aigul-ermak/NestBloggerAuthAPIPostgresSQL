@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Post } from '../../post/entities/post.entity';
 
 @Entity()
 export class User {
@@ -8,22 +9,22 @@ export class User {
   @Column()
   login: string;
 
-  // @OneToMany(() => Post, (p) => p.user)
-  // post: Post;
+  @OneToMany(() => Post, (p) => p.user)
+  post: Post[];
 
   @Column()
   email: string;
 
   @Column()
-  //passwordHash: string;
+  passwordHash: string;
   password: string;
-  //
-  // @Column()
-  // passwordRecoveryCode: string;
-  //
-  // @Column({ default: null })
-  // recoveryCodeExpirationDate: Date;
-  //
-  // @Column()
-  // createdAt: Date;
+
+  @Column()
+  passwordRecoveryCode: string;
+
+  @Column({ default: null })
+  recoveryCodeExpirationDate: Date;
+
+  @Column()
+  createdAt: Date;
 }
