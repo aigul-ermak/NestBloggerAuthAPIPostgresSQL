@@ -17,14 +17,13 @@ export class User {
 
   @Column()
   passwordHash: string;
-  password: string;
 
-  @Column()
+  @Column({ default: null })
   passwordRecoveryCode: string;
 
   @Column({ default: null })
   recoveryCodeExpirationDate: Date;
 
-  @Column()
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 }
