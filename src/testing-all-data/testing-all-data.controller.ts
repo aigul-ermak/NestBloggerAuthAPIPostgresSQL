@@ -1,7 +1,7 @@
 import { Controller, Delete, HttpCode } from '@nestjs/common';
 import { TestingAllDataService } from './testing-all-data.service';
 
-@Controller('testing-all-data')
+@Controller('testing')
 export class TestingAllDataController {
   constructor(private readonly testingAllDataService: TestingAllDataService) {}
 
