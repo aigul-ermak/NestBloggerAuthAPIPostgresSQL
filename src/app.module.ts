@@ -1,12 +1,12 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './settings/app.controller';
-import { AppService } from './settings/app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './user/entities/user.entity';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserModule } from './user/user.module';
-import { TestingAllDataService } from './testing-all-data/testing-all-data.service';
+import {Module} from '@nestjs/common';
+import {AppController} from './settings/app.controller';
+import {AppService} from './settings/app.service';
+import {TypeOrmModule} from '@nestjs/typeorm';
+import {User} from './user/entities/user.entity';
+import {ConfigModule, ConfigService} from '@nestjs/config';
+import {UserModule} from './user/user.module';
 import configuration from './settings/configuration';
+import { TestingAllDataModule } from './testing-all-data/testing-all-data.module';
 
 @Module({
   imports: [
@@ -25,8 +25,9 @@ import configuration from './settings/configuration';
       }),
     }),
     UserModule,
+    TestingAllDataModule,
   ],
   controllers: [AppController],
-  providers: [AppService, TestingAllDataService],
+  providers: [AppService],
 })
 export class AppModule {}
