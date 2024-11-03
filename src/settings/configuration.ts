@@ -1,6 +1,4 @@
-// export type EnvironmentVariable = { [key: string]: string | undefined };
-
-import { EnvironmentVariable } from './envType';
+export type EnvironmentVariable = { [key: string]: string | undefined };
 
 export type ConfigurationType = ReturnType<typeof getConfig>;
 
@@ -15,6 +13,8 @@ const getConfig = (
   environmentVariables: EnvironmentVariable,
   currentEnvironment: Environments,
 ) => {
+  console.log(`Parsed Current Environment: ${currentEnvironment}`);
+
   return {
     apiSettings: {
       PORT: Number.parseInt(environmentVariables.PORT || '3000'),
@@ -24,6 +24,7 @@ const getConfig = (
 
     databaseSettings: {
       DATABASE_URL: environmentVariables.DATABASE_URL,
+      DATABASE_TEST_URL: environmentVariables.DATABASE_TEST_URL,
     },
 
     environmentSettings: {
@@ -54,7 +55,6 @@ const getConfig = (
 };
 
 export default () => {
-  // const environmentVariables: EnvironmentVariable = process.env;
   const environmentVariables = process.env as unknown as EnvironmentVariable;
 
   const currentEnvironment: Environments = environmentVariables.ENV
