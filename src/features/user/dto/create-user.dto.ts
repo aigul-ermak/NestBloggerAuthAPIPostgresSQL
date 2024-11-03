@@ -1,6 +1,6 @@
 import { IsString, Length, Matches } from 'class-validator';
-import { Trim } from '../../base/decorators/transform/trim';
-import { IsOptionalEmail } from '../../base/decorators/validation/isOptionalEmailDecorator';
+import { Trim } from '../../../base/decorators/transform/trim';
+import { IsOptionalEmail } from '../../../base/decorators/validation/isOptionalEmailDecorator';
 
 export class CreateUserDto {
   @IsString()
