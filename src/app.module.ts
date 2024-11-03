@@ -9,6 +9,7 @@ import configuration from './settings/configuration';
 import { TestingAllDataModule } from './testing-all-data/testing-all-data.module';
 import { PostModule } from './post/post.module';
 import { Post } from './post/entities/post.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { Post } from './post/entities/post.entity';
     UserModule,
     TestingAllDataModule,
     PostModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
