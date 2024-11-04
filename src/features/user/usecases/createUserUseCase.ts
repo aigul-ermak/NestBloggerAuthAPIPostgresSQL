@@ -42,7 +42,7 @@ export class CreateUserUseCase
     const savedUser = await this.usersRepository.save(await newUser);
 
     const savedNewUser: UserOutputModel = {
-      id: savedUser.id,
+      id: savedUser.id.toString(),
       login: savedUser.login,
       email: savedUser.email,
       createdAt: savedUser.createdAt,
