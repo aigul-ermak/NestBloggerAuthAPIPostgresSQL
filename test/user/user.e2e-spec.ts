@@ -3,7 +3,7 @@ import { AppModule } from '../../src/app.module';
 import { INestApplication } from '@nestjs/common';
 import { applyAppSettings } from '../../src/settings/apply.app.setting';
 import { createUser } from '../helpers/create-user.helper';
-
+// import request from 'supertest';
 const request = require('supertest');
 
 const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
@@ -33,20 +33,12 @@ describe('Users testing', () => {
   });
 
   afterEach(async () => {
-    // Clear data after each test
     await request(httpServer).delete('/testing/all-data').expect(204);
   });
 
   afterAll(async () => {
-    // Close the app after all tests have completed
     await app.close();
   });
-
-  // afterAll(async () => {
-  //   await request(httpServer).delete('/testing/all-data').expect(204);
-  //
-  //   await app.close();
-  // });
 
   it('POST -> /sa/users: 201 add new user to the system', async () => {
     const userDto = {
@@ -140,7 +132,7 @@ describe('Users testing', () => {
       HTTP_BASIC_PASS,
     );
     expect(newUserResponse.status).toBe(201);
-    console.error(newUserResponse.body);
+
     const response = await request(httpServer)
       .get('/sa/users')
       .set(
@@ -148,7 +140,7 @@ describe('Users testing', () => {
         getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
       )
       .expect(200);
-    console.error(response.body);
+
     const expectedResponse = {
       pagesCount: 1,
       page: 1,
