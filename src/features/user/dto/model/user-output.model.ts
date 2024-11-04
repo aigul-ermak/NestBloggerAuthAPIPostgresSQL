@@ -1,16 +1,16 @@
 import { User } from '../../entities/user.entity';
 
 export class UserOutputModel {
-  id: number;
+  id: string;
   login: string;
   email: string;
   createdAt: Date;
 }
 
 export const UserOutputModelMapper = (user: User): UserOutputModel => {
-  const outputModel = new UserOutputModel();
+  const outputModel: UserOutputModel = new UserOutputModel();
 
-  outputModel.id = user.id;
+  outputModel.id = user.id.toString();
   outputModel.login = user.login;
   outputModel.email = user.email;
   outputModel.createdAt = user.createdAt;
