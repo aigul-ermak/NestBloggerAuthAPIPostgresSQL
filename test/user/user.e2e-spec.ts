@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
 import { INestApplication } from '@nestjs/common';
 import { applyAppSettings } from '../../src/settings/apply.app.setting';
-// import * as request from 'supertest';
+import { createUser } from '../helpers/create-user.helper';
 
 const request = require('supertest');
 
@@ -38,23 +38,20 @@ describe('Users testing', () => {
     await app.close();
   });
 
-  it('/users Create user', async () => {
+  it('POST -> /sa/users: 201 add new user to the system', async () => {
     const userDto = {
       login: 'testuser',
       password: 'testpassword',
       email: 'testuser@example.com',
     };
 
-    const response = await request(httpServer)
-      .post('/sa/users')
-      .set(
-        'Authorization',
-        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
-      )
-      .send(userDto)
-      .expect(201);
-
-    const newUser = response.body;
+    const newUserResponse = await createUser(
+      app,
+      userDto,
+      HTTP_BASIC_USER,
+      HTTP_BASIC_PASS,
+    );
+    expect(newUserResponse.status).toBe(201);
 
     const expectedUser = {
       login: userDto.login,
@@ -63,6 +60,97 @@ describe('Users testing', () => {
       createdAt: expect.any(String),
     };
 
-    expect(newUser).toMatchObject(expectedUser);
+    expect(newUserResponse.body).toMatchObject(expectedUser);
+  });
+
+  it('POST -> /sa/users: 401 add new user to the system, incorrect values', async () => {
+    const userDto = {
+      login: '',
+      password: '',
+      email: '',
+    };
+
+    const newUserResponse = await createUser(
+      app,
+      userDto,
+      HTTP_BASIC_USER,
+      HTTP_BASIC_PASS,
+    );
+
+    expect(newUserResponse.status).toBe(400);
+
+    const expectedResult = {
+      errorsMessages: [
+        { message: 'Length not correct', field: 'login' },
+        {
+          message: 'Length not correct',
+          field: 'password',
+        },
+        {
+          message: 'email must be an email',
+          field: 'email',
+        },
+      ],
+    };
+
+    expect(newUserResponse.body).toEqual(expectedResult);
+  });
+
+  it('POST -> /sa/users: 401 add new user to the system, unauthorized', async () => {
+    const userDto = {
+      login: 'testuser',
+      password: 'testpassword',
+      email: 'testuser@example.com',
+    };
+
+    const response = await request(httpServer)
+      .post('/sa/users')
+      .send(userDto)
+      .expect(401);
+
+    expect(response.body).toEqual({
+      message: 'Unauthorized',
+      statusCode: 401,
+    });
+  });
+
+  it('GET -> /sa/users: 200 return all users', async () => {
+    const userDto = {
+      login: 'testuser',
+      password: 'testpassword',
+      email: 'testuser@example.com',
+    };
+
+    const newUserResponse = await createUser(
+      app,
+      userDto,
+      HTTP_BASIC_USER,
+      HTTP_BASIC_PASS,
+    );
+    expect(newUserResponse.status).toBe(201);
+    console.log(newUserResponse.body);
+    const response = await request(httpServer)
+      .get('/sa/users')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .expect(200);
+
+    const expectedResponse = {
+      pagesCount: 1,
+      page: 1,
+      pageSize: 10,
+      totalCount: 1,
+      items: [
+        {
+          login: newUserResponse.body.login,
+          email: newUserResponse.body.email,
+          id: expect.any(Number),
+          createdAt: expect.any(String),
+        },
+      ],
+    };
+    expect(response.body).toEqual(expectedResponse);
   });
 });
