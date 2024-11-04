@@ -27,7 +27,7 @@ export class UserController {
   }
 
   @Get()
-  @HttpCode(201)
+  @HttpCode(200)
   @UseGuards(BasicAuthGuard)
   findAll(@Query() sortData: SortUserDto) {
     return this.commandBus.execute(new GetAllUsersUseCaseCommand(sortData));
