@@ -1,6 +1,6 @@
 import { InjectDataSource } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
-import { DataSource, FindOneOptions } from 'typeorm';
+import { Brackets, DataSource, FindOneOptions } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -13,8 +13,9 @@ export class UsersQueryRepository {
   ) {}
 
   async findOne(criteria: FindOneOptions<User>): Promise<User | null> {
-    const whereClauses = [];
-    const parameters = [];
+    const whereClauses: string[] = [];
+    const parameters: string[] = [];
+
     if (criteria.where) {
       Object.entries(criteria.where).forEach(([key, value], index) => {
         whereClauses.push(`"${key}" = $${index + 1}`);
@@ -33,43 +34,57 @@ export class UsersQueryRepository {
   }
 
   async findAll(
-    filter: any,
+    // TODO type and delete
+    filter: Partial<Record<string, any>>,
     sortBy: string,
     sortDirection: 'asc' | 'desc',
     skip: number,
     limit: number,
   ): Promise<User[]> {
-    const query = `
-      SELECT * FROM "user"
-      ${this.buildWhereClause(filter)}
-      ORDER BY "${sortBy}" ${sortDirection.toUpperCase()}
-      LIMIT $1 OFFSET $2
-    `;
-    const parameters = [limit, skip];
-    const result = await this.dataSource.query(query, parameters);
+    const query = this.dataSource
+      .createQueryBuilder(User, 'user')
+      .select(['user.id', 'user.login', 'user.email', 'user.createdAt'])
+      .where(
+        new Brackets((qb) => {
+          if (filter.login) {
+            qb.orWhere('user.login ILIKE :login', {
+              login: `%${filter.login}%`,
+            });
+          }
+          if (filter.email) {
+            qb.orWhere('user.email ILIKE :email', {
+              email: `%${filter.email}%`,
+            });
+          }
+        }),
+      )
+      .orderBy(`user.${sortBy}`, sortDirection.toUpperCase() as 'ASC' | 'DESC')
+      .skip(skip)
+      .take(limit);
 
-    return result;
+    return await query.getMany();
   }
 
   async countDocuments(filter: any): Promise<number> {
-    const query = `
-      SELECT COUNT(*) FROM "user"
-      ${this.buildWhereClause(filter)}
-    `;
+    const query = this.dataSource
+      .createQueryBuilder(User, 'user')
+      .select('COUNT(user.id)', 'count')
+      .where(
+        new Brackets((qb) => {
+          if (filter.login) {
+            qb.orWhere('user.login ILIKE :login', {
+              login: `%${filter.login}%`,
+            });
+          }
+          if (filter.email) {
+            qb.orWhere('user.email ILIKE :email', {
+              email: `%${filter.email}%`,
+            });
+          }
+        }),
+      );
 
-    const result = await this.dataSource.query(query);
-    return parseInt(result[0].count, 10);
-  }
-
-  private buildWhereClause(filter: any): string {
-    if (!filter || !filter.$or || filter.$or.length === 0) return '';
-
-    const whereConditions = filter.$or.map((condition: any) => {
-      const [field, regexCondition] = Object.entries(condition)[0];
-      const regexValue = (regexCondition as any).$regex;
-      return `"${field}" ILIKE '%${regexValue}%'`;
-    });
-
-    return `WHERE ${whereConditions.join(' OR ')}`;
+    const result = await query.getRawOne();
+    return parseInt(result.count, 10);
   }
 }
