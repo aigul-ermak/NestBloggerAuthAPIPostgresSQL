@@ -24,6 +24,12 @@ import { AuthModule } from './features/auth/auth.module';
         const environmentSettings = configService.get('environmentSettings', {
           infer: true,
         });
+
+        console.log(
+          'app-environmentSettings',
+          configService.get('environmentSettings'),
+        );
+
         const databaseSettings = configService.get('databaseSettings', {
           infer: true,
         });

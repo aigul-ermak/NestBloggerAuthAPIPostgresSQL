@@ -7,8 +7,13 @@ import { CreateUserUseCase } from './usecases/createUserUseCase';
 import { UsersRepository } from './repositories/users.repository';
 import { UsersQueryRepository } from './repositories/users-query.repository';
 import { GetAllUsersUseCase } from './usecases/getAllUsersUseCase';
+import { DeleteUserUseCase } from './usecases/deleteUserUseCase';
 
-const CommandHandlers = [CreateUserUseCase, GetAllUsersUseCase];
+const CommandHandlers = [
+  CreateUserUseCase,
+  GetAllUsersUseCase,
+  DeleteUserUseCase,
+];
 
 @Module({
   imports: [CqrsModule, TypeOrmModule.forFeature([User])],

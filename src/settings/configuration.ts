@@ -57,9 +57,16 @@ const getConfig = (
 export default () => {
   const environmentVariables = process.env as unknown as EnvironmentVariable;
 
-  const currentEnvironment: Environments = environmentVariables.ENV
-    ? (environmentVariables.ENV as Environments)
+  const currentEnvironment: Environments = environmentVariables.NODE_ENV
+    ? (environmentVariables.NODE_ENV.toUpperCase() as Environments)
     : Environments.DEVELOPMENT;
+
+  // TODO delete
+  console.log(
+    'config-currentEnvironment',
+    environmentVariables.NODE_ENV.toUpperCase(),
+  );
+  console.log('config -Parsed Current Environment:', currentEnvironment);
 
   return getConfig(environmentVariables, currentEnvironment);
 };
