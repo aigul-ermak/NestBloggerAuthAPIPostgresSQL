@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
+  Param,
   Post,
   Query,
   UseGuards,
@@ -14,6 +16,7 @@ import { BasicAuthGuard } from '../../base/guards/auth-guards/basic.auth.guard';
 import { UserOutputModel } from './dto/model/user-output.model';
 import { GetAllUsersUseCaseCommand } from './usecases/getAllUsersUseCase';
 import { SortUserDto } from './dto/sort-user.dto';
+import { DeleteUserUseCaseCommand } from './usecases/deleteUserUseCase';
 
 @Controller('sa/users')
 export class UserController {
@@ -43,8 +46,10 @@ export class UserController {
   //   return this.userService.update(+id, updateUserDto);
   // }
   //
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.userService.remove(+id);
-  // }
+  @Delete(':id')
+  @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
+  remove(@Param('id') id: string) {
+    return this.commandBus.execute(new DeleteUserUseCaseCommand(id));
+  }
 }
