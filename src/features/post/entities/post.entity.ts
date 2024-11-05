@@ -1,5 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { User } from '../../user/entities/user.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Post {
@@ -29,7 +28,4 @@ export class Post {
 
   @Column({ default: 0 })
   dislikesCount: number;
-
-  @ManyToOne(() => User, (user) => user.post, { eager: true })
-  user: User;
 }
