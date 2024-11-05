@@ -13,3 +13,15 @@ This is a backend project built with NestJS and PostgreSQL, designed to support 
 - **Token-based Authentication**: Session management with refresh tokens.
 - **Device Management**: Track and manage sessions across multiple devices for added security.
 - **Database**: PostgreSQL for reliable and scalable data storage.
+
+## API Documentation
+
+## Getting Started
+
+These instructions will help you set up and run the project on your local machine.
+
+### Prerequisites
+
+- Node.js
+- NestJS CLI (optional, for easier development)
+- PostgreSQL
