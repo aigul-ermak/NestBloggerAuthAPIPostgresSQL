@@ -23,38 +23,19 @@ export class GetAllUsersUseCase
     const searchEmailTerm = command.sortData.searchEmailTerm ?? null;
 
     let filter: any = {};
+    if (searchLoginTerm) filter.login = searchLoginTerm;
+    if (searchEmailTerm) filter.email = searchEmailTerm;
 
-    if (searchEmailTerm || searchLoginTerm) {
-      filter['$or'] = [];
-      if (searchEmailTerm) {
-        filter['$or'].push({
-          'accountData.email': {
-            $regex: searchEmailTerm,
-            $options: 'i',
-          },
-        });
-      }
-      if (searchLoginTerm) {
-        filter['$or'].push({
-          'accountData.login': {
-            $regex: searchLoginTerm,
-            $options: 'i',
-          },
-        });
-      }
-    }
-
-    if (!filter['$or']?.length) {
-      filter = {};
-    }
+    const skip = (pageNumber - 1) * pageSize;
 
     const users = await this.usersQueryRepository.findAll(
       filter,
       sortBy,
       sortDirection,
-      (pageNumber - 1) * pageSize,
+      skip,
       pageSize,
     );
+
     const totalCount = await this.usersQueryRepository.countDocuments(filter);
     const pageCount = Math.ceil(totalCount / pageSize);
 
