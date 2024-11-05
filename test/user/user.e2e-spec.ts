@@ -180,4 +180,32 @@ describe('Users testing', () => {
       statusCode: 401,
     });
   });
+
+  it('DELETE -> /sa/users: 204 add new user to the system, unauthorized', async () => {
+    const userDto = {
+      login: 'testuser',
+      password: 'testpassword',
+      email: 'testuser@example.com',
+    };
+
+    const newUserResponse = await createUser(
+      app,
+      userDto,
+      HTTP_BASIC_USER,
+      HTTP_BASIC_PASS,
+    );
+    expect(newUserResponse.status).toBe(201);
+
+    // TODO delete
+    console.error(newUserResponse.body.id);
+
+    const response = await request(httpServer)
+      .delete(`/sa/users/${newUserResponse.body.id}`)
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(userDto)
+      .expect(204);
+  });
 });
