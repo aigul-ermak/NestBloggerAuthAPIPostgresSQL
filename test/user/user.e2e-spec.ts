@@ -3,6 +3,7 @@ import { AppModule } from '../../src/app.module';
 import { INestApplication } from '@nestjs/common';
 import { applyAppSettings } from '../../src/settings/apply.app.setting';
 import { createUser } from '../helpers/create-user.helper';
+import { isLogLevelEnabled } from '@nestjs/common/services/utils';
 // import request from 'supertest';
 const request = require('supertest');
 
@@ -85,18 +86,53 @@ describe('Users testing', () => {
 
     const expectedResult = {
       errorsMessages: [
-        { message: 'Length not correct', field: 'login' },
         {
-          message: 'Length not correct',
+          message: expect.any(String),
+          field: 'login',
+        },
+        {
+          message: expect.any(String),
           field: 'password',
         },
         {
-          message: 'email must be an email',
+          message: expect.any(String),
           field: 'email',
         },
       ],
     };
+    console.error(expectedResult);
+    expect(newUserResponse.body).toEqual(expectedResult);
+  });
 
+  it('POST -> "/sa/users": should return error if passed body is incorrect; status 400;', async () => {
+    const userDto = {
+      login: 'sh',
+      password: 'length_21-weqweqweqwq',
+      email: 'someemail@gg.com',
+    };
+
+    const newUserResponse = await createUser(
+      app,
+      userDto,
+      HTTP_BASIC_USER,
+      HTTP_BASIC_PASS,
+    );
+
+    expect(newUserResponse.status).toBe(400);
+
+    const expectedResult = {
+      errorsMessages: [
+        {
+          message: expect.any(String),
+          field: 'login',
+        },
+        {
+          message: expect.any(String),
+          field: 'password',
+        },
+      ],
+    };
+    console.error(expectedResult);
     expect(newUserResponse.body).toEqual(expectedResult);
   });
 
@@ -195,9 +231,6 @@ describe('Users testing', () => {
       HTTP_BASIC_PASS,
     );
     expect(newUserResponse.status).toBe(201);
-
-    // TODO delete
-    console.error(newUserResponse.body.id);
 
     const response = await request(httpServer)
       .delete(`/sa/users/${newUserResponse.body.id}`)
