@@ -62,7 +62,7 @@ export class UsersQueryRepository {
       .skip(skip)
       .take(limit);
 
-    return await query.getMany();
+    return query.getMany();
   }
 
   async countDocuments(filter: any): Promise<number> {
