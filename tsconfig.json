@@ -21,9 +21,6 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": false,
-    "paths": {
-      "@app/*": ["src/*"]
-    }
   },
   "include": [
     "src/**/*.ts",
