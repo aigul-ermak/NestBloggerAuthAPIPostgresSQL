@@ -2,7 +2,7 @@ import { NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersRepository } from '../repositories/users.repository';
 import { UsersQueryRepository } from '../repositories/users-query.repository';
-import { User } from '@app/features/user/entities/user.entity';
+import { User } from '../entities/user.entity';
 
 export class DeleteUserUseCaseCommand {
   constructor(public id: string) {}

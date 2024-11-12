@@ -10,9 +10,17 @@ import { TestingAllDataModule } from './features/testing-all-data/testing-all-da
 import { PostModule } from './features/post/post.module';
 import { Post } from './features/post/entities/post.entity';
 import { AuthModule } from './features/auth/auth.module';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { EmailModule } from './features/email/email.module';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot([
+      {
+        ttl: 10,
+        limit: 5,
+      },
+    ]),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
@@ -54,6 +62,7 @@ import { AuthModule } from './features/auth/auth.module';
     TestingAllDataModule,
     PostModule,
     AuthModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
