@@ -3,7 +3,6 @@ import { AppModule } from '../../src/app.module';
 import { INestApplication } from '@nestjs/common';
 import { applyAppSettings } from '../../src/settings/apply.app.setting';
 import { createUser } from '../helpers/create-user.helper';
-import { isLogLevelEnabled } from '@nestjs/common/services/utils';
 import request from 'supertest';
 // const request = require('supertest');
 
