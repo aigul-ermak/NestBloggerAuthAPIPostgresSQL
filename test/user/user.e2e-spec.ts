@@ -4,8 +4,8 @@ import { INestApplication } from '@nestjs/common';
 import { applyAppSettings } from '../../src/settings/apply.app.setting';
 import { createUser } from '../helpers/create-user.helper';
 import { isLogLevelEnabled } from '@nestjs/common/services/utils';
-// import request from 'supertest';
-const request = require('supertest');
+import request from 'supertest';
+// const request = require('supertest');
 
 const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
 const HTTP_BASIC_PASS = process.env.HTTP_BASIC_PASS as string;
