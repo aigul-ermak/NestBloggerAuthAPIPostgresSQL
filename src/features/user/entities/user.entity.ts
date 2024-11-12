@@ -22,4 +22,13 @@ export class User {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
+
+  @Column({ default: null })
+  confirmationCode: string;
+
+  @Column({ default: null })
+  expirationDate: Date;
+
+  @Column({ default: false })
+  isConfirmed: boolean;
 }
