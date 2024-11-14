@@ -12,6 +12,7 @@ import { Post } from './features/post/entities/post.entity';
 import { AuthModule } from './features/auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { EmailModule } from './features/email/email.module';
+import { SessionModule } from './features/session/session.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { EmailModule } from './features/email/email.module';
     PostModule,
     AuthModule,
     EmailModule,
+    SessionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
