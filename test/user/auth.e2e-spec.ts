@@ -3,6 +3,7 @@ import { AppModule } from '../../src/app.module';
 import { INestApplication } from '@nestjs/common';
 import { applyAppSettings } from '../../src/settings/apply.app.setting';
 import request from 'supertest';
+import { createUser } from '../helpers/create-user.helper';
 
 const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
 const HTTP_BASIC_PASS = process.env.HTTP_BASIC_PASS as string;
@@ -86,6 +87,42 @@ describe('Auth testing', () => {
           field: 'email',
         },
       ],
+    };
+
+    expect(response.body).toEqual(expectedResult);
+  });
+
+  it('POST -> auth/login: should return 200 for login user', async () => {
+    const newUserDto = {
+      login: 'user1',
+      password: 'password',
+      email: 'example1@example.com',
+    };
+
+    const newUserResponse = await createUser(
+      app,
+      newUserDto,
+      HTTP_BASIC_USER,
+      HTTP_BASIC_PASS,
+    );
+
+    expect(newUserResponse.status).toBe(201);
+    console.error(newUserResponse.body);
+    const response = await request(httpServer)
+      .post(`/auth/login`)
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send({
+        loginOrEmail: newUserDto.login,
+        password: newUserDto.password,
+      })
+      .expect(200);
+
+    const accessToken = response.body;
+    const expectedResult = {
+      accessToken: expect.any(String),
     };
 
     expect(response.body).toEqual(expectedResult);
