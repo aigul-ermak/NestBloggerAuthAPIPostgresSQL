@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Session } from '../../session/entities/session.entity';
 
 @Entity()
 export class User {
@@ -31,4 +32,7 @@ export class User {
 
   @Column({ default: false })
   isConfirmed: boolean;
+
+  @OneToMany(() => Session, (session) => session.user)
+  sessions: Session[];
 }
