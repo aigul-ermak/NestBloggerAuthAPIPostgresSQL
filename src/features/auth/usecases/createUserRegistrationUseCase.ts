@@ -25,13 +25,12 @@ export class CreateUserRegistrationUseCase
   ) {}
 
   async execute(command: CreateUserRegistrationUseCaseCommand) {
-    const existingUserByLogin = await this.usersQueryRepository.findOne({
-      where: { login: command.createUserDto.login },
-    });
-
-    const existingUserByEmail = await this.usersQueryRepository.findOne({
-      where: { email: command.createUserDto.email },
-    });
+    const existingUserByLogin = await this.usersQueryRepository.findOneByLogin(
+      command.createUserDto.login,
+    );
+    const existingUserByEmail = await this.usersQueryRepository.findOneByEmail(
+      command.createUserDto.email,
+    );
 
     if (existingUserByLogin || existingUserByEmail) {
       const field = existingUserByLogin ? 'login' : 'email';
@@ -65,7 +64,7 @@ export class CreateUserRegistrationUseCase
     };
 
     const newUserEntity = this.usersRepository.create(newUser);
-    const res = await this.usersRepository.save(await newUserEntity);
+    const res = await this.usersRepository.create(await newUserEntity);
 
     if (!newUser) {
       throw new BadRequestException('User creation failed');

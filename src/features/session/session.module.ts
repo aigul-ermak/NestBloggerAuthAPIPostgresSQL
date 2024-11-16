@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { SessionRepository } from './repositories/session.repository';
 import { SessionQueryRepository } from './repositories/session-query.repository';
-import { Session } from './entities/session.entity';
+import { DatabaseModule } from '../../database.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Session])],
+  imports: [DatabaseModule],
   providers: [SessionRepository, SessionQueryRepository],
   exports: [SessionRepository, SessionQueryRepository],
 })

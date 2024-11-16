@@ -29,12 +29,13 @@ export class UserController {
     return this.commandBus.execute(new CreateUserUseCaseCommand(createUserDto));
   }
 
-  @Get()
-  @HttpCode(200)
-  @UseGuards(BasicAuthGuard)
-  findAll(@Query() sortData: SortUserDto) {
-    return this.commandBus.execute(new GetAllUsersUseCaseCommand(sortData));
-  }
+  // @Get()
+  // @HttpCode(200)
+  // @UseGuards(BasicAuthGuard)
+  // findAll(@Query() sortData: SortUserDto) {
+  //   return this.commandBus.execute(new GetAllUsersUseCaseCommand(sortData));
+  // }
+
   //
   // @Get(':id')
   // findOne(@Param('id') id: string) {
@@ -46,10 +47,10 @@ export class UserController {
   //   return this.userService.update(+id, updateUserDto);
   // }
   //
-  @Delete(':id')
-  @HttpCode(204)
-  @UseGuards(BasicAuthGuard)
-  remove(@Param('id') id: string) {
-    return this.commandBus.execute(new DeleteUserUseCaseCommand(id));
-  }
+  // @Delete(':id')
+  // @HttpCode(204)
+  // @UseGuards(BasicAuthGuard)
+  // remove(@Param('id') id: string) {
+  //   return this.commandBus.execute(new DeleteUserUseCaseCommand(id));
+  // }
 }

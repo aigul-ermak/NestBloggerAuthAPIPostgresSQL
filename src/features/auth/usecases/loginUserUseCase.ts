@@ -106,9 +106,8 @@ export class LoginUserUseCase
 
   private async validateUser(loginOrEmail: string, password: string) {
     // TODO type and delete
-    const user: any | null = await this.usersQueryRepository.findOne({
-      where: { login: loginOrEmail },
-    });
+    const user: any | null =
+      await this.usersQueryRepository.findOneByLogin(loginOrEmail);
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');

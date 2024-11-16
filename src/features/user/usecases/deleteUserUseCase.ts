@@ -19,14 +19,15 @@ export class DeleteUserUseCase
 
   async execute(command: DeleteUserUseCaseCommand): Promise<boolean> {
     const userId = parseInt(command.id, 10);
-    const user: User | null = await this.usersQueryRepository.findOne({
-      where: { id: userId },
-    });
+    //TODO change
+    const user: User | null =
+      await this.usersQueryRepository.findOneByEmail('email');
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    return await this.usersRepository.deleteById(command.id);
+    // return await this.usersRepository.deleteById(command.id);
+    return true;
   }
 }

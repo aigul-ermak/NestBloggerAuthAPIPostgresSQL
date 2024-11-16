@@ -22,9 +22,7 @@ export class CreateUserUseCase
   async execute(command: CreateUserUseCaseCommand): Promise<UserOutputModel> {
     const { login, email, password } = command.createUserDto;
 
-    const existingUser = await this.usersQueryRepository.findOne({
-      where: { email },
-    });
+    const existingUser = await this.usersQueryRepository.findOneByEmail(email);
 
     if (existingUser) {
       throw new ConflictException('User with this email already exists');
@@ -39,15 +37,13 @@ export class CreateUserUseCase
       passwordHash: passwordHashed,
     });
 
-    const savedUser = await this.usersRepository.save(await newUser);
+    const savedUser = await this.usersRepository.create(await newUser);
 
-    const savedNewUser: UserOutputModel = {
+    return {
       id: savedUser.id.toString(),
       login: savedUser.login,
       email: savedUser.email,
       createdAt: savedUser.createdAt,
     };
-
-    return savedNewUser;
   }
 }

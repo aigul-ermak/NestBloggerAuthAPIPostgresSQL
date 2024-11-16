@@ -27,16 +27,18 @@ export class GetAllUsersUseCase
     if (searchEmailTerm) filter.email = searchEmailTerm;
 
     const skip = (pageNumber - 1) * pageSize;
+    const users = [];
 
-    const users = await this.usersQueryRepository.findAll(
-      filter,
-      sortBy,
-      sortDirection,
-      skip,
-      pageSize,
-    );
+    // const users = await this.usersQueryRepository.findAll(
+    //   filter,
+    //   sortBy,
+    //   sortDirection,
+    //   skip,
+    //   pageSize,
+    // );
 
-    const totalCount = await this.usersQueryRepository.countDocuments(filter);
+    //const totalCount = await this.usersQueryRepository.countDocuments(filter);
+    const totalCount = 10;
     const pageCount = Math.ceil(totalCount / pageSize);
 
     return {

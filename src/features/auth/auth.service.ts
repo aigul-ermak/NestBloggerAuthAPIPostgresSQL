@@ -11,20 +11,28 @@ export class AuthService {
   ) {}
 
   async validateUser(loginOrEmail: string, password: string) {
-    const user = await this.usersQueryRepository.findOne({
-      where: [{ login: loginOrEmail }, { email: loginOrEmail }],
-    });
+    // const user = await this.usersQueryRepository.findOne({
+    //   where: [{ login: loginOrEmail }, { email: loginOrEmail }],
+    // });
 
-    if (!user) {
+    const existingUserByLogin =
+      await this.usersQueryRepository.findOneByLogin(loginOrEmail);
+    const existingUserByEmail =
+      await this.usersQueryRepository.findOneByEmail(loginOrEmail);
+
+    if (!existingUserByLogin && !existingUserByEmail) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      existingUserByLogin.passwordHash,
+    );
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return user;
+    return existingUserByLogin;
   }
 }
