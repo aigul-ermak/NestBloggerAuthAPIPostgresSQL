@@ -4,9 +4,18 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ConfigurationType } from './settings/configuration';
 import { applyAppSettings } from './settings/apply.app.setting';
+import { Pool } from 'pg';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const pool = app.get<Pool>('DATABASE_POOL');
+  try {
+    const res = await pool.query('SELECT NOW()');
+    console.log('Database Connected:', res.rows);
+  } catch (error) {
+    console.error('Database Connection Failed:', error);
+  }
 
   applyAppSettings(app);
 
