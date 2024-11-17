@@ -1,5 +1,5 @@
 export type RefreshTokenType = {
-  userId: string;
+  userId: number;
   deviceId: string;
   userIP: string;
   userAgent: string;

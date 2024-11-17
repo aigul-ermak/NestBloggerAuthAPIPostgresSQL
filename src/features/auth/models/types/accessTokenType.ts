@@ -1,5 +1,5 @@
 export type AccessTokenType = {
   loginOrEmail: string | undefined;
-  id: string;
+  id: number;
   deviceId: string;
 };
