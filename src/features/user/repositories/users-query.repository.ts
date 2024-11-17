@@ -43,45 +43,44 @@ export class UsersQueryRepository {
   async findAll(
     // TODO type and delete
     filter: Partial<Record<string, any>>,
-    sortBy: string,
-    sortDirection: 'asc' | 'desc',
+    sortBy: string = 'created_at',
+    sortDirection: 'asc' | 'desc' = 'desc',
     skip: number,
     limit: number,
   ): Promise<User[]> {
     const allowedSortColumns = ['id', 'login', 'email', 'created_at'];
     if (!allowedSortColumns.includes(sortBy)) {
-      throw new Error(`Invalid sort column: ${sortBy}`);
+      sortBy = 'created_at';
     }
 
     const whereClauses: string[] = [];
     const parameters: any[] = [];
     let paramIndex = 1;
-
+    console.error(filter);
     if (filter.login) {
-      whereClauses.push(`u.login ILIKE $${paramIndex++}`);
+      whereClauses.push(`login ILIKE $${paramIndex++}`);
       parameters.push(`%${filter.login}%`);
     }
 
     if (filter.email) {
-      whereClauses.push(`u.email ILIKE $${paramIndex++}`);
+      whereClauses.push(`email ILIKE $${paramIndex++}`);
       parameters.push(`%${filter.email}%`);
     }
 
     const whereClause = whereClauses.length
       ? `WHERE ${whereClauses.join(' OR ')}`
       : '';
+    console.error(whereClause);
+    console.error('sortBy', sortBy);
 
     const query = `
-  SELECT id, login, email, created_at
-  FROM users u
-  ${whereClause}
-   ORDER BY 
-      ${sortBy === 'login' || sortBy === 'email' ? `LOWER(u.${sortBy})` : `u.${sortBy}`} 
-      ${sortDirection.toUpperCase()}, u.id ASC
+    SELECT id, login, email, created_at
+    FROM users
+    ${whereClause}
+    ORDER BY ${sortBy} ${sortDirection.toUpperCase()}
     LIMIT $${paramIndex++}
-  OFFSET $${paramIndex};
-`;
-
+    OFFSET $${paramIndex};
+  `;
     parameters.push(limit, skip);
 
     const result = await this.pool.query(query, parameters);

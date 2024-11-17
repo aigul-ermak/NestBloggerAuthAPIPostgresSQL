@@ -26,9 +26,14 @@ export class GetAllUsersUseCase
     const searchLoginTerm: string = command.sortData.searchLoginTerm ?? null;
     const searchEmailTerm: string = command.sortData.searchEmailTerm ?? null;
 
-    let filter: any = {};
-    if (searchLoginTerm) filter.login = searchLoginTerm;
-    if (searchEmailTerm) filter.email = searchEmailTerm;
+    // let filter: any = {};
+    // if (searchLoginTerm) filter.login = searchLoginTerm;
+    // if (searchEmailTerm) filter.email = searchEmailTerm;
+
+    const filter = {
+      login: searchLoginTerm,
+      email: searchEmailTerm,
+    };
 
     const skip: number = (pageNumber - 1) * pageSize;
 
@@ -44,7 +49,9 @@ export class GetAllUsersUseCase
       await this.usersQueryRepository.countDocuments(filter);
 
     const pageCount: number = Math.ceil(totalCount / pageSize);
+    //TODO delete
 
+    console.error(sortBy);
     return {
       pagesCount: pageCount,
       page: +pageNumber,
