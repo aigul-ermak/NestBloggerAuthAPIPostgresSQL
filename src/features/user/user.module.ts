@@ -16,6 +16,7 @@ const CommandHandlers = [
 
 @Module({
   imports: [CqrsModule, DatabaseModule],
+  controllers: [UserController],
   providers: [...CommandHandlers, UsersRepository, UsersQueryRepository],
   exports: [UsersRepository, UsersQueryRepository],
 })
