@@ -3,7 +3,6 @@ import { BadRequestException } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { v4 as uuidv4 } from 'uuid';
-import { add } from 'date-fns';
 import { EmailService } from '../../../features/email/email.service';
 import { UsersRepository } from '../../../features/user/repositories/users.repository';
 import { UsersQueryRepository } from '../../user/repositories/users-query.repository';
@@ -24,16 +23,17 @@ export class CreateUserRegistrationUseCase
     private emailService: EmailService,
   ) {}
 
-  async execute(command: CreateUserRegistrationUseCaseCommand) {
-    const existingUserByLogin = await this.usersQueryRepository.findOneByLogin(
-      command.createUserDto.login,
-    );
-    const existingUserByEmail = await this.usersQueryRepository.findOneByEmail(
-      command.createUserDto.email,
-    );
+  async execute(command: CreateUserRegistrationUseCaseCommand): Promise<void> {
+    const user: User =
+      (await this.usersQueryRepository.findOneByLogin(
+        command.createUserDto.login,
+      )) ||
+      (await this.usersQueryRepository.findOneByEmail(
+        command.createUserDto.email,
+      ));
 
-    if (existingUserByLogin || existingUserByEmail) {
-      const field = existingUserByLogin ? 'login' : 'email';
+    if (user) {
+      const field = user ? 'login' : 'email';
       throw new BadRequestException({
         errorsMessages: [
           {
@@ -55,16 +55,15 @@ export class CreateUserRegistrationUseCase
       login: command.createUserDto.login,
       email: command.createUserDto.email,
       passwordHash: passwordHashed,
-      passwordRecoveryCode: null,
-      recoveryCodeExpirationDate: null,
-      createdAt: new Date(),
-      confirmationCode: confirmationCode as string,
-      expirationDate: add(new Date(), { hours: 1, minutes: 3 }),
-      isConfirmed: false,
+      // passwordRecoveryCode: null,
+      // recoveryCodeExpirationDate: null,
+      // createdAt: new Date(),
+      // confirmationCode: confirmationCode as string,
+      // expirationDate: add(new Date(), { hours: 1, minutes: 3 }),
+      // isConfirmed: false,
     };
 
-    const newUserEntity = this.usersRepository.create(newUser);
-    const res = await this.usersRepository.create(await newUserEntity);
+    const createdUser = this.usersRepository.create(newUser);
 
     if (!newUser) {
       throw new BadRequestException('User creation failed');
@@ -75,7 +74,5 @@ export class CreateUserRegistrationUseCase
     } catch (error) {
       console.error('Email sending failed:', error);
     }
-
-    return res;
   }
 }
