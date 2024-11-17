@@ -228,6 +228,8 @@ describe('Users testing', () => {
       )
       .query(queryParams)
       .expect(200);
+    // TODO delete
+    console.error(response.body);
 
     const expectedResponse = {
       pagesCount: 1,
