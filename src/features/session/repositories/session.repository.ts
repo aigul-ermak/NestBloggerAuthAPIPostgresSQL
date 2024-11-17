@@ -6,11 +6,11 @@ import { Pool } from 'pg';
 export class SessionRepository {
   constructor(@Inject('DATABASE_POOL') private readonly pool: Pool) {}
 
-  async createSession(sessionUser: Partial<Session>): Promise<string> {
+  async createSession(sessionUser: Partial<Session>): Promise<void> {
     const result = await this.pool.query(
-      `INSERT INTO sessions ("userId", "deviceId", "ip", "title", "iatDate", "expDate")
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING id`,
+      `INSERT INTO sessions ("user_id", "device_id", "ip", "title", "iat_date", "exp_date")
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING id`,
       [
         sessionUser.userId,
         sessionUser.deviceId,
@@ -20,8 +20,6 @@ export class SessionRepository {
         sessionUser.expDate,
       ],
     );
-
-    return result[0].id;
   }
 
   async updateSession(sessionUser: Partial<Session>): Promise<void> {

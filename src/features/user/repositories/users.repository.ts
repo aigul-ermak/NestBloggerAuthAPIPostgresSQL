@@ -16,15 +16,7 @@ export class UsersRepository {
 
     const result = await this.pool.query(query, values);
     return result.rows[0];
-    // const newUser = this.usersRepository.create(user);
-    // return await this.usersRepository.save(newUser);
-    // todo get raw sql only, post/put typeorm
-    // return await this.dataSource.query(`INSERT INTO "user" VALUES ()`);
   }
-
-  // async save(user: Partial<User>): Promise<User> {
-  //   return await this.usersRepository.save(user);
-  // }
 
   async deleteById(id: number): Promise<boolean> {
     const query = `DELETE FROM users WHERE id = $1;`;

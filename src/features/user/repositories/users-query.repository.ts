@@ -15,22 +15,49 @@ export class UsersQueryRepository {
   async findOneByLogin(login: string): Promise<User | null> {
     const query = `SELECT * FROM users WHERE login = $1 LIMIT 1;`;
     const result = await this.pool.query(query, [login]);
-    return result.rowCount > 0 ? result.rows[0] : null;
+    if (result.rowCount > 0) {
+      const user = result.rows[0];
+
+      return {
+        id: user.id,
+        login: user.login,
+        email: user.email,
+        passwordHash: user.password_hash,
+        passwordRecoveryCode: user.password_recovery_code,
+        recoveryCodeExpirationDate: user.recovery_code_expiration_date,
+        createdAt: user.created_at,
+        confirmationCode: user.confirmation_code,
+        expirationDate: user.expiration_date,
+        isConfirmed: user.is_confirmed,
+      } as User;
+    }
+
+    return null;
   }
 
   async findOneByEmail(email: string): Promise<User | null> {
     const query = `SELECT * FROM users WHERE email = $1 LIMIT 1;`;
     const result = await this.pool.query(query, [email]);
 
-    return result.rowCount > 0 ? result.rows[0] : null;
-    // const whereClauses: string[] = [];
-    // const parameters: string[] = [];
-    //
-    // if (criteria.where) {
-    //   Object.entries(criteria.where).forEach(([key, value], index) => {
-    //     whereClauses.push(`"${key}" = $${index + 1}`);
-    //     parameters.push(value);
-    //   });
+    if (result.rowCount > 0) {
+      const user = result.rows[0];
+
+      // Explicit mapping
+      return {
+        id: user.id,
+        login: user.login,
+        email: user.email,
+        passwordHash: user.password_hash,
+        passwordRecoveryCode: user.password_recovery_code,
+        recoveryCodeExpirationDate: user.recovery_code_expiration_date,
+        createdAt: user.created_at,
+        confirmationCode: user.confirmation_code,
+        expirationDate: user.expiration_date,
+        isConfirmed: user.is_confirmed,
+      } as User;
+    }
+
+    return null;
   }
 
   async findOneById(id: number): Promise<User | null> {
