@@ -10,13 +10,7 @@ interface FindOneCriteria {
 
 @Injectable()
 export class UsersQueryRepository {
-  constructor(
-    @Inject('DATABASE_POOL') private readonly pool: Pool,
-    // @InjectRepository(User)
-    // private readonly usersRepository: Repository<User>,
-    // @InjectDataSource()
-    // private dataSource: DataSource,
-  ) {}
+  constructor(@Inject('DATABASE_POOL') private readonly pool: Pool) {}
 
   async findOneByLogin(login: string): Promise<User | null> {
     const query = `SELECT * FROM users WHERE login = $1 LIMIT 1;`;
@@ -49,58 +43,74 @@ export class UsersQueryRepository {
   // return result.length > 0 ? result[0] : null;
   // }
 
-  // async findAll(
-  //   // TODO type and delete
-  //   filter: Partial<Record<string, any>>,
-  //   sortBy: string,
-  //   sortDirection: 'asc' | 'desc',
-  //   skip: number,
-  //   limit: number,
-  // ): Promise<User[]> {
-  //   const query = this.dataSource
-  //     .createQueryBuilder(User, 'user')
-  //     .select(['user.id', 'user.login', 'user.email', 'user.createdAt'])
-  //     .where(
-  //       new Brackets((qb) => {
-  //         if (filter.login) {
-  //           qb.orWhere('user.login ILIKE :login', {
-  //             login: `%${filter.login}%`,
-  //           });
-  //         }
-  //         if (filter.email) {
-  //           qb.orWhere('user.email ILIKE :email', {
-  //             email: `%${filter.email}%`,
-  //           });
-  //         }
-  //       }),
-  //     )
-  //     .orderBy(`user.${sortBy}`, sortDirection.toUpperCase() as 'ASC' | 'DESC')
-  //     .skip(skip)
-  //     .take(limit);
-  //
-  //   return query.getMany();
-  // }
+  async findAll(
+    // TODO type and delete
+    filter: Partial<Record<string, any>>,
+    sortBy: string,
+    sortDirection: 'asc' | 'desc',
+    skip: number,
+    limit: number,
+  ): Promise<User[]> {
+    const whereClauses: string[] = [];
+    const parameters: any[] = [];
+    let paramIndex = 1;
 
-  // async countDocuments(filter: any): Promise<number> {
-  //   const query = this.dataSource
-  //     .createQueryBuilder(User, 'user')
-  //     .select('COUNT(user.id)', 'count')
-  //     .where(
-  //       new Brackets((qb) => {
-  //         if (filter.login) {
-  //           qb.orWhere('user.login ILIKE :login', {
-  //             login: `%${filter.login}%`,
-  //           });
-  //         }
-  //         if (filter.email) {
-  //           qb.orWhere('user.email ILIKE :email', {
-  //             email: `%${filter.email}%`,
-  //           });
-  //         }
-  //       }),
-  //     );
-  //
-  //   const result = await query.getRawOne();
-  //   return parseInt(result.count, 10);
-  // }
+    if (filter.login) {
+      whereClauses.push(`login ILIKE $${paramIndex++}`);
+      parameters.push(`%${filter.login}%`);
+    }
+
+    if (filter.email) {
+      whereClauses.push(`email ILIKE $${paramIndex++}`);
+      parameters.push(`%${filter.email}%`);
+    }
+
+    const whereClause = whereClauses.length
+      ? `WHERE ${whereClauses.join(' OR ')}`
+      : '';
+
+    const query = `
+    SELECT id, login, email, created_at
+    FROM users
+    ${whereClause}
+    ORDER BY ${sortBy} ${sortDirection.toUpperCase()}
+    LIMIT $${paramIndex++}
+    OFFSET $${paramIndex};
+  `;
+
+    parameters.push(limit, skip);
+
+    const result = await this.pool.query(query, parameters);
+    return result.rows;
+  }
+
+  //TODO type?
+  async countDocuments(filter: Partial<Record<string, any>>): Promise<number> {
+    const whereClauses: string[] = [];
+    const parameters: any[] = [];
+    let paramIndex = 1;
+
+    if (filter.login) {
+      whereClauses.push(`login ILIKE $${paramIndex++}`);
+      parameters.push(`%${filter.login}%`);
+    }
+
+    if (filter.email) {
+      whereClauses.push(`email ILIKE $${paramIndex++}`);
+      parameters.push(`%${filter.email}%`);
+    }
+
+    const whereClause = whereClauses.length
+      ? `WHERE ${whereClauses.join(' OR ')}`
+      : '';
+
+    const query = `
+    SELECT COUNT(*) AS count
+    FROM users
+    ${whereClause};
+  `;
+
+    const result = await this.pool.query(query, parameters);
+    return parseInt(result.rows[0].count, 10);
+  }
 }
