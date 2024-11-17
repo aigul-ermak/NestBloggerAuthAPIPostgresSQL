@@ -11,6 +11,7 @@ import { UserLoginDto } from '../models/login-user.input.dto';
 import { AccessTokenType } from '../models/types/accessTokenType';
 import { RefreshTokenType } from '../models/types/refreshTokenType';
 import { SessionRepository } from '../../session/repositories/session.repository';
+import { User } from '../../user/entities/user.entity';
 
 export class LoginUserUseCaseCommand {
   constructor(
@@ -48,11 +49,13 @@ export class LoginUserUseCase
     );
 
     const userDeviceId: string = uuidv4();
-    //TODO type and delete
-    const user: any = await this.validateUser(
+
+    const user: User = await this.validateUser(
       command.loginDto.loginOrEmail,
       command.loginDto.password,
     );
+
+    console.error('user before session', user);
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
@@ -71,7 +74,10 @@ export class LoginUserUseCase
       userAgent: command.userAgent,
     };
 
-    const accessToken = this.jwtService.sign(accessTokenPayload, {});
+    const accessToken = this.jwtService.sign(accessTokenPayload, {
+      secret: accessSecret,
+      expiresIn: accessExpiry,
+    });
 
     const refreshToken = this.jwtService.sign(refreshTokenPayload, {
       secret: refreshSecret,
@@ -83,13 +89,14 @@ export class LoginUserUseCase
       exp: number;
     };
 
-    if (!decodedToken) {
+    if (!decodedToken || !decodedToken.exp) {
       throw new Error('Failed to decode refresh token');
     }
 
     const iatDate = new Date(decodedToken.iat * 1000);
     const expDate = new Date(decodedToken.exp * 1000);
 
+    // TODO type
     const sessionUser = {
       userId: user.id,
       deviceId: userDeviceId,
@@ -105,15 +112,18 @@ export class LoginUserUseCase
   }
 
   private async validateUser(loginOrEmail: string, password: string) {
-    // TODO type and delete
-    const user: any | null =
-      await this.usersQueryRepository.findOneByLogin(loginOrEmail);
+    const user: User =
+      (await this.usersQueryRepository.findOneByLogin(loginOrEmail)) ||
+      (await this.usersQueryRepository.findOneByEmail(loginOrEmail));
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    const passwordHashed = user.passwordHash;
+
+    const isPasswordValid = await bcrypt.compare(password, passwordHashed);
+
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
