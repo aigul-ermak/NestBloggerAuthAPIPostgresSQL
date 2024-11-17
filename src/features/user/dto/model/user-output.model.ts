@@ -1,5 +1,3 @@
-import { User } from '../../entities/user.entity';
-
 export class UserOutputModel {
   id: string;
   login: string;
@@ -7,13 +5,13 @@ export class UserOutputModel {
   createdAt: Date;
 }
 
-export const UserOutputModelMapper = (user: User): UserOutputModel => {
+export const UserOutputModelMapper = (user: any): UserOutputModel => {
   const outputModel: UserOutputModel = new UserOutputModel();
 
   outputModel.id = user.id.toString();
   outputModel.login = user.login;
   outputModel.email = user.email;
-  outputModel.createdAt = user.createdAt;
+  outputModel.createdAt = new Date(user.created_at);
 
   return outputModel;
 };
