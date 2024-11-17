@@ -1,22 +1,9 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  Param,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateUserUseCaseCommand } from './usecases/createUserUseCase';
 import { BasicAuthGuard } from '../../base/guards/auth-guards/basic.auth.guard';
 import { UserOutputModel } from './dto/model/user-output.model';
-import { GetAllUsersUseCaseCommand } from './usecases/getAllUsersUseCase';
-import { SortUserDto } from './dto/sort-user.dto';
-import { DeleteUserUseCaseCommand } from './usecases/deleteUserUseCase';
 
 @Controller('sa/users')
 export class UserController {
