@@ -48,17 +48,22 @@ export class UsersQueryRepository {
     skip: number,
     limit: number,
   ): Promise<User[]> {
+    const allowedSortColumns = ['id', 'login', 'email', 'created_at'];
+    if (!allowedSortColumns.includes(sortBy)) {
+      throw new Error(`Invalid sort column: ${sortBy}`);
+    }
+
     const whereClauses: string[] = [];
     const parameters: any[] = [];
     let paramIndex = 1;
 
     if (filter.login) {
-      whereClauses.push(`login ILIKE $${paramIndex++}`);
+      whereClauses.push(`u.login ILIKE $${paramIndex++}`);
       parameters.push(`%${filter.login}%`);
     }
 
     if (filter.email) {
-      whereClauses.push(`email ILIKE $${paramIndex++}`);
+      whereClauses.push(`u.email ILIKE $${paramIndex++}`);
       parameters.push(`%${filter.email}%`);
     }
 
@@ -67,13 +72,15 @@ export class UsersQueryRepository {
       : '';
 
     const query = `
-    SELECT id, login, email, created_at
-    FROM users
-    ${whereClause}
-    ORDER BY ${sortBy} ${sortDirection.toUpperCase()}
+  SELECT id, login, email, created_at
+  FROM users u
+  ${whereClause}
+   ORDER BY 
+      ${sortBy === 'login' || sortBy === 'email' ? `LOWER(u.${sortBy})` : `u.${sortBy}`} 
+      ${sortDirection.toUpperCase()}, u.id ASC
     LIMIT $${paramIndex++}
-    OFFSET $${paramIndex};
-  `;
+  OFFSET $${paramIndex};
+`;
 
     parameters.push(limit, skip);
 
