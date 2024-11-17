@@ -4,7 +4,10 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UsersRepository } from '../repositories/users.repository';
 import { UsersQueryRepository } from '../repositories/users-query.repository';
-import { UserOutputModel } from '../dto/model/user-output.model';
+import {
+  UserOutputModel,
+  UserOutputModelMapper,
+} from '../dto/model/user-output.model';
 
 export class CreateUserUseCaseCommand {
   constructor(public createUserDto: CreateUserDto) {}
@@ -31,19 +34,14 @@ export class CreateUserUseCase
     const saltRounds = 10;
     const passwordHashed = await bcrypt.hash(password, saltRounds);
 
-    const newUser = this.usersRepository.create({
+    const newUser = {
       login,
       email,
       passwordHash: passwordHashed,
-    });
+    };
 
     const savedUser = await this.usersRepository.create(await newUser);
 
-    return {
-      id: savedUser.id.toString(),
-      login: savedUser.login,
-      email: savedUser.email,
-      createdAt: savedUser.createdAt,
-    };
+    return UserOutputModelMapper(savedUser);
   }
 }
