@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
+  Param,
   Post,
   Query,
   UseGuards,
@@ -15,6 +17,7 @@ import { UserOutputModel } from './dto/model/user-output.model';
 import { SortUserDto } from './dto/sort-user.dto';
 
 import { GetAllUsersUseCaseCommand } from './usecases/getAllUsersUseCase';
+import { DeleteUserUseCaseCommand } from './usecases/deleteUserUseCase';
 
 @Controller('sa/users')
 export class UserController {
@@ -34,7 +37,6 @@ export class UserController {
     return this.commandBus.execute(new GetAllUsersUseCaseCommand(sortData));
   }
 
-  //
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.userService.findOne(+id);
@@ -45,10 +47,10 @@ export class UserController {
   //   return this.userService.update(+id, updateUserDto);
   // }
   //
-  // @Delete(':id')
-  // @HttpCode(204)
-  // @UseGuards(BasicAuthGuard)
-  // remove(@Param('id') id: string) {
-  //   return this.commandBus.execute(new DeleteUserUseCaseCommand(id));
-  // }
+  @Delete(':id')
+  @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
+  remove(@Param('id') id: number) {
+    return this.commandBus.execute(new DeleteUserUseCaseCommand(id));
+  }
 }
