@@ -107,7 +107,7 @@ describe('Auth testing', () => {
     );
 
     expect(newUserResponse.status).toBe(201);
-    console.error(newUserResponse.body);
+
     const response = await request(httpServer)
       .post(`/auth/login`)
       .set(
@@ -121,6 +121,7 @@ describe('Auth testing', () => {
       .expect(200);
 
     const accessToken = response.body;
+
     const expectedResult = {
       accessToken: expect.any(String),
     };
