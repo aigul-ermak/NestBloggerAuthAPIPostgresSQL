@@ -33,15 +33,12 @@ export class UsersQueryRepository {
     //   });
   }
 
-  // const query = `
-  //   SELECT * FROM "user"
-  //   ${whereClauses.length ? 'WHERE ' + whereClauses.join(' AND ') : ''}
-  //   LIMIT 1
-  // `;
-  // const result = await this.dataSource.query(query, parameters);
-  //
-  // return result.length > 0 ? result[0] : null;
-  // }
+  async findOneById(id: number): Promise<User | null> {
+    const query = `SELECT * FROM users WHERE id = $1 LIMIT 1;`;
+    const result = await this.pool.query(query, [id]);
+
+    return result.rowCount > 0 ? result.rows[0] : null;
+  }
 
   async findAll(
     // TODO type and delete

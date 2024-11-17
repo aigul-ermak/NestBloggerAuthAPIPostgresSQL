@@ -1,5 +1,5 @@
 import { User } from '../entities/user.entity';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Pool } from 'pg';
 
 @Injectable()
@@ -26,13 +26,13 @@ export class UsersRepository {
   //   return await this.usersRepository.save(user);
   // }
 
-  // async deleteById(id: string): Promise<boolean> {
-  //   const result = await this.usersRepository.delete(id);
-  //
-  //   if (result.affected === 0) {
-  //     throw new NotFoundException(`User with ID ${id} not found`);
-  //   }
-  //
-  //   return true;
-  // }
+  async deleteById(id: number): Promise<boolean> {
+    const query = `DELETE FROM users WHERE id = $1;`;
+    const result = await this.pool.query(query, [id]);
+
+    if (result.rowCount === 0) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return true;
+  }
 }
