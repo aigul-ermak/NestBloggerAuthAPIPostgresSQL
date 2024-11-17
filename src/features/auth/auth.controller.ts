@@ -46,7 +46,7 @@ export class AuthController {
 
   @Post('/registration')
   @HttpCode(204)
-  async registration(@Body() createUserDto: CreateUserDto) {
+  async registration(@Body() createUserDto: CreateUserDto): Promise<void> {
     await this.commandBus.execute(
       new CreateUserRegistrationUseCaseCommand(createUserDto),
     );
