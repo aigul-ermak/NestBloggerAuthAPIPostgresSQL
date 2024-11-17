@@ -35,11 +35,11 @@
 //   expDate: Date;
 // }
 export class Session {
-  id: string; // UUID for the session ID
-  userId: string; // UUID for the user
-  deviceId: string; // UUID for the device
-  ip: string; // IP address of the device
-  title: string; // Device/browser name or session title
-  iatDate: Date; // Issued At date (when the session was created)
-  expDate: Date; // Expiration date of the session
+  id: string;
+  userId: number;
+  deviceId: string;
+  ip: string;
+  title: string;
+  iatDate: Date;
+  expDate: Date;
 }
