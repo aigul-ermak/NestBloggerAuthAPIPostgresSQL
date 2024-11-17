@@ -11,8 +11,8 @@ export class TestingAllDataService {
 
   async clearAllData(): Promise<void> {
     try {
-      await this.pool.query('TRUNCATE TABLE users CASCADE'); // Adjust table name to your actual schema
-      await this.pool.query('TRUNCATE TABLE sessions CASCADE'); // Example for other tables
+      await this.pool.query('TRUNCATE TABLE users CASCADE');
+      await this.pool.query('TRUNCATE TABLE sessions CASCADE');
       console.log('All data cleared successfully');
     } catch (error) {
       console.error('Error clearing data:', error);
