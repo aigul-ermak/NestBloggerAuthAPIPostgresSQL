@@ -20,8 +20,8 @@ jobs:
 
     - name: Deploy to VPS
       run: |
-        ssh user@your-vps-ip << 'EOF'
-        cd /path/to/your-app
+        ssh deploy@91.108.243.136 << 'EOF'
+        cd /home/deploy/NestBloggerAuthAPIPostgresSQL
         git pull origin main
         npm install
         npm run build
