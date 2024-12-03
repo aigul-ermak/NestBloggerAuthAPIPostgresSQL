@@ -14,12 +14,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js
-      - name: Set up Node.js
+      # Step 2: Set up Node.js and Corepack
+      - name: Set up Node.js and Corepack
         uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: 'yarn'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Use Specific Yarn Version
+        run: corepack prepare yarn$4.4.0 --activate
 
       # Step 3: Install dependencies
       - name: Install dependencies
