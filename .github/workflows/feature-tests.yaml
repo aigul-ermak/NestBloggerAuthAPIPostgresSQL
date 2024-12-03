@@ -39,9 +39,22 @@ jobs:
 
       # Step 4: Install dependencies
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile
 
-      # Step 5: Run tests
+      # Step 5: Wait for PostgreSQL
+      - name: Wait for PostgreSQL
+        run: |
+          until nc -z localhost 5432; do
+            echo "Waiting for database..."
+            sleep 2
+          done
+          echo "Database is ready!"
+
+      # Step 6: Debug DATABASE_URL
+      - name: Debug DATABASE_URL
+        run: echo $DATABASE_URL
+
+      # Step 7: Run tests
       - name: Run tests
         env:
           DATABASE_URL: postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}
