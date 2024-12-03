@@ -3,7 +3,7 @@ name: CI/CD Deployment
 on:
   push:
     branches:
-      - main  # Replace with your deployment branch
+      - main
 
 jobs:
   build-and-deploy:
@@ -13,30 +13,34 @@ jobs:
       # Step 1: Checkout repository
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
 
       # Step 2: Set up Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18  # Use your project's Node.js version
+          cache: 'yarn'
 
       # Step 3: Install dependencies and build
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build project
-        run: npm run build
+      - name: Install and build
+        run: |
+          yarn install --frozen-lockfile
+          yarn build     
 
       # Step 4: Deploy to the server
       - name: Deploy to server
         env:
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
         run: |
-          ssh -o StrictHostKeyChecking=no deploy@your-server-ip << 'EOF'
-            cd /var/www/nestjs-app
-            git config --global url."https://${DEPLOY_TOKEN}@github.com/".insteadOf "https://github.com/"
-            git pull origin main
-            npm install
-            npm run build
-            pm2 restart nestjs-app
+          echo "${DEPLOY_TOKEN}" | sshpass ssh-add -
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+          scp -r ./dist ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/var/www/nest-app
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << EOF
+            cd /var/www/nest-app
+            docker-compose down
+            docker-compose up -d --build
           EOF
