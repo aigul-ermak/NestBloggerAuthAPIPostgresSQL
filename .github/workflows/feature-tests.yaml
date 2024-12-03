@@ -3,7 +3,7 @@ name: Feature Branch Tests
 on:
   push:
     branches:
-      - '**' # Runs on all branches except main
+      - '**'
 
 jobs:
   test:
@@ -14,23 +14,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js and Corepack
-      - name: Set up Node.js and Corepack
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'yarn'
 
+      # Step 3: Enable Corepack and Activate Yarn
       - name: Enable Corepack
         run: corepack enable
 
       - name: Use Specific Yarn Version
-        run: corepack prepare yarn$4.4.0 --activate
+        run: corepack prepare yarn@4.4.0 --activate
 
-      # Step 3: Install dependencies
+      # Step 4: Install dependencies
       - name: Install dependencies
         run: yarn install
 
-      # Step 4: Run tests
+      # Step 5: Run tests
       - name: Run tests
         run: yarn test
