@@ -33,7 +33,7 @@ jobs:
       - name: Install and build
         run: |
           yarn install --frozen-lockfile
-          yarn build     
+              
 
       # Step 6: Deploy to the server
       - name: Deploy to server
