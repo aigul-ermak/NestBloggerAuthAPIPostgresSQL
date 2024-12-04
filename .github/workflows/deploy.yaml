@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18  # Ensure this matches your project's Node.js version
+          node-version: 20  # Ensure this matches your project's Node.js version
           cache: 'yarn'
 
       # Step 3: Enable Corepack
@@ -33,6 +33,7 @@ jobs:
       - name: Install and build
         run: |
           yarn install --frozen-lockfile
+          yarn build
               
 
       # Step 6: Deploy to the server
