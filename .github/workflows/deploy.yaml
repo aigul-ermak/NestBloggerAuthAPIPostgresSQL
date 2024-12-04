@@ -21,6 +21,12 @@ jobs:
           node-version: 20  # Ensure this matches your project's Node.js version
           cache: 'yarn'
 
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Use Specific Yarn Version
+        run: corepack prepare yarn@4.4.0 --activate
+
       # Step 3: Install dependencies and build
       - name: Install and build
         run: |
