@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: 18
 
-      # Step 3: Enable Corepack and Activate Yarn
+      # Step 3: Enable Corepack and Activate Yarnn
       - name: Enable Corepack
         run: corepack enable
 
