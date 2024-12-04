@@ -58,8 +58,8 @@ describe('Users testing', () => {
     const newUserResponse = await createUser(
       app,
       userDto,
-      HTTP_BASIC_USER,
-      HTTP_BASIC_PASS,
+      basicAuthUsername,
+      basicAuthPassword,
     );
     expect(newUserResponse.status).toBe(201);
 
@@ -85,8 +85,8 @@ describe('Users testing', () => {
     const newUserResponse = await createUser(
       app,
       userDto,
-      HTTP_BASIC_USER,
-      HTTP_BASIC_PASS,
+      basicAuthUsername,
+      basicAuthPassword,
     );
 
     expect(newUserResponse.status).toBe(400);
@@ -121,8 +121,8 @@ describe('Users testing', () => {
     const newUserResponse = await createUser(
       app,
       userDto,
-      HTTP_BASIC_USER,
-      HTTP_BASIC_PASS,
+      basicAuthUsername,
+      basicAuthPassword,
     );
 
     expect(newUserResponse.status).toBe(400);
@@ -171,8 +171,8 @@ describe('Users testing', () => {
     const newUserResponse = await createUser(
       app,
       userDto,
-      HTTP_BASIC_USER,
-      HTTP_BASIC_PASS,
+      basicAuthUsername,
+      basicAuthPassword,
     );
     expect(newUserResponse.status).toBe(201);
 
@@ -180,7 +180,7 @@ describe('Users testing', () => {
       .get('/sa/users')
       .set(
         'Authorization',
-        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+        getBasicAuthHeader(basicAuthUsername, basicAuthPassword),
       )
       .expect(200);
 
@@ -283,8 +283,8 @@ describe('Users testing', () => {
     const newUserResponse = await createUser(
       app,
       userDto,
-      HTTP_BASIC_USER,
-      HTTP_BASIC_PASS,
+      basicAuthUsername,
+      basicAuthPassword,
     );
     expect(newUserResponse.status).toBe(201);
 
@@ -306,8 +306,8 @@ describe('Users testing', () => {
     const newUserResponse = await createUser(
       app,
       userDto,
-      HTTP_BASIC_USER,
-      HTTP_BASIC_PASS,
+      basicAuthUsername,
+      basicAuthPassword,
     );
     expect(newUserResponse.status).toBe(201);
 
@@ -315,7 +315,7 @@ describe('Users testing', () => {
       .delete(`/sa/users/${newUserResponse.body.id}`)
       .set(
         'Authorization',
-        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+        getBasicAuthHeader(basicAuthUsername, basicAuthPassword),
       )
       .send(userDto)
       .expect(204);
