@@ -5,6 +5,7 @@ import { applyAppSettings } from '../../src/settings/apply.app.setting';
 import { createUser } from '../helpers/create-user.helper';
 import request from 'supertest';
 import { createAllUsers } from '../helpers/create-allusers.helper';
+import { TestConfigModule } from '../setup';
 // const request = require('supertest');
 
 // const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
@@ -26,7 +27,7 @@ describe('Users testing', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, TestConfigModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
