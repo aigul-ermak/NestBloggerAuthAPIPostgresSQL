@@ -17,7 +17,7 @@ jobs:
         env:
           DATABASE_TEST_URL: test_blogs
           POSTGRES_USER: admin
-          POSTGRES_PASSWORD: admin
+          POSTGRES_PASSWORD: 54321
         volumes:
           - ./sql:/docker-entrypoint-initdb.d/
 
