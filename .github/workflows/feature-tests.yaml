@@ -54,5 +54,5 @@ jobs:
       # Step 4: Run tests
       - name: Run tests
         env:
-          DATABASE_TEST_URL: postgres://admin:54321@localhost:5432/test_blogs
+          DATABASE_TEST_URL: postgres://admin:54321@91.108.243.136:5432/test_blogs
         run: yarn test
