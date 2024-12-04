@@ -30,21 +30,11 @@ jobs:
         with:
           node-version: 20
 
-      # Step 3: Enable Corepack and Activate Yarnn
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Use Specific Yarn Version
-        run: corepack prepare yarn@4.4.0 --activate
-
-      - name: Prepare Yarn Version
-        run: corepack prepare yarn@4.4.0 --activate
-
-      # Step 4: Install dependencies
+      # Step 2: Install dependencies
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      # Step 5: Wait for PostgreSQL
+      # Step 3: Wait for PostgreSQL
       - name: Wait for PostgreSQL
         run: |
           until nc -z localhost 5432; do
@@ -53,7 +43,7 @@ jobs:
           done
           echo "Database is ready!"
 
-      # Step 6: Run tests
+      # Step 4: Run tests
       - name: Run tests
         env:
           DATABASE_URL: postgres://admin:admin@localhost:5432/test_blogs

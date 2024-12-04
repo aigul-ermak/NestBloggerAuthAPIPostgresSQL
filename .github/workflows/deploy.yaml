@@ -21,26 +21,14 @@ jobs:
           node-version: 20  # Ensure this matches your project's Node.js version
           cache: 'yarn'
 
-      # Step 3: Enable Corepack
-      - name: Enable Corepack
-        run: corepack enable
-
-      # Step 4: Prepare and Activate the Correct Yarn Version
-      - name: Prepare Yarn Version
-        run: corepack prepare yarn@4.4.0 --activate
-
-      # Step 5: Verify Yarn Version
-      - name: Check Yarn Version
-        run: yarn --version
-
-      # Step 6: Install dependencies and build
+      # Step 3: Install dependencies and build
       - name: Install and build
         run: |
           yarn install --frozen-lockfile
           yarn build
               
 
-      # Step 6: Deploy to the server
+      # Step 4: Deploy to the server
       - name: Deploy to server
         env:
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
