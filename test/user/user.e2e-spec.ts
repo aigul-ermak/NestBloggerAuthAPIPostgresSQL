@@ -7,8 +7,11 @@ import request from 'supertest';
 import { createAllUsers } from '../helpers/create-allusers.helper';
 // const request = require('supertest');
 
-const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
-const HTTP_BASIC_PASS = process.env.HTTP_BASIC_PASS as string;
+// const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
+// const HTTP_BASIC_PASS = process.env.HTTP_BASIC_PASS as string;
+
+const HTTP_BASIC_USER = 'admin';
+const HTTP_BASIC_PASS = 'qwerty';
 
 const getBasicAuthHeader = (username: string, password: string) => {
   const base64Credentials = Buffer.from(`${username}:${password}`).toString(

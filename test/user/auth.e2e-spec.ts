@@ -5,8 +5,11 @@ import { applyAppSettings } from '../../src/settings/apply.app.setting';
 import request from 'supertest';
 import { createUser } from '../helpers/create-user.helper';
 
-const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
-const HTTP_BASIC_PASS = process.env.HTTP_BASIC_PASS as string;
+// const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
+// const HTTP_BASIC_PASS = process.env.HTTP_BASIC_PASS as string;
+
+const HTTP_BASIC_USER = 'admin';
+const HTTP_BASIC_PASS = 'qwerty';
 
 const getBasicAuthHeader = (username: string, password: string) => {
   const base64Credentials = Buffer.from(`${username}:${password}`).toString(
