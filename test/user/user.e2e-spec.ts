@@ -5,14 +5,17 @@ import { applyAppSettings } from '../../src/settings/apply.app.setting';
 import { createUser } from '../helpers/create-user.helper';
 import request from 'supertest';
 import { createAllUsers } from '../helpers/create-allusers.helper';
-import { TestConfigModule } from '../setup';
+import { testConfig, TestConfigModule } from '../setup';
 // const request = require('supertest');
 
 // const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
 // const HTTP_BASIC_PASS = process.env.HTTP_BASIC_PASS as string;
 
-const HTTP_BASIC_USER = 'admin';
-const HTTP_BASIC_PASS = 'qwerty';
+// const HTTP_BASIC_USER = 'admin';
+// const HTTP_BASIC_PASS = 'qwerty';
+
+const basicAuthUsername = testConfig().basicAuthSettings.BASIC_AUTH_USERNAME;
+const basicAuthPassword = testConfig().basicAuthSettings.BASIC_AUTH_PASSWORD;
 
 const getBasicAuthHeader = (username: string, password: string) => {
   const base64Credentials = Buffer.from(`${username}:${password}`).toString(
