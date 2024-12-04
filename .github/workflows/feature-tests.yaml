@@ -51,7 +51,7 @@ jobs:
           done
           echo "Database is ready!"
 
-      # Step 4: Run tests
+      # Step 4: Run test
       - name: Run tests
         env:
           DATABASE_TEST_URL: postgres://admin:54321@91.108.243.136:5432/test_blogs
