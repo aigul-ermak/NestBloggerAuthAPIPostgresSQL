@@ -37,6 +37,9 @@ jobs:
       - name: Use Specific Yarn Version
         run: corepack prepare yarn@4.4.0 --activate
 
+      - name: Prepare Yarn Version
+        run: corepack prepare yarn@4.4.0 --activate
+
       # Step 4: Install dependencies
       - name: Install dependencies
         run: yarn install --frozen-lockfile
