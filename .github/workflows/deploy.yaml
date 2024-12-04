@@ -34,7 +34,7 @@ jobs:
           yarn build
               
 
-      # Step 4: Deploy to the server
+      # Step 4: Deploy to the serverr
       - name: Deploy to server
         env:
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
