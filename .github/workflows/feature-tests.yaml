@@ -50,12 +50,8 @@ jobs:
           done
           echo "Database is ready!"
 
-      # Step 6: Debug DATABASE_URL
-      - name: Debug DATABASE_URL
-        run: echo $DATABASE_URL
-
-      # Step 7: Run tests
+      # Step 6: Run tests
       - name: Run tests
         env:
-          DATABASE_URL: postgres://admin:admin@91.108.243.136:5432/test_blogs
+          DATABASE_URL: postgres://admin:admin@localhost:5432/test_blogs
         run: yarn test
