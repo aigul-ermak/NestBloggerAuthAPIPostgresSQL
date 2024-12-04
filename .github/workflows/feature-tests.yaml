@@ -18,6 +18,8 @@ jobs:
           DATABASE_TEST_URL: test_blogs
           POSTGRES_USER: admin
           POSTGRES_PASSWORD: admin
+        volumes:
+          - ./sql:/docker-entrypoint-initdb.d/
 
     steps:
       # Step 1: Check out the code
@@ -52,5 +54,5 @@ jobs:
       # Step 4: Run tests
       - name: Run tests
         env:
-          DATABASE_TEST_URL: postgres://admin:admin@localhost:5432/test_blogs
+          DATABASE_TEST_URL: postgres://admin:54321@localhost:5432/test_blogs
         run: yarn test
