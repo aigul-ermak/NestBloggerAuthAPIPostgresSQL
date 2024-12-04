@@ -17,7 +17,7 @@ jobs:
         env:
           DATABASE_TEST_URL: test_blogs
           POSTGRES_USER: admin
-          POSTGRES_PASSWORD: 54321
+          POSTGRES_PASSWORD: admin
         volumes:
           - ./sql:/docker-entrypoint-initdb.d/
 
@@ -54,5 +54,5 @@ jobs:
       # Step 4: Run test
       - name: Run tests
         env:
-          DATABASE_TEST_URL: postgres://admin:54321@91.108.243.136:5432/test_blogs
+          DATABASE_TEST_URL: postgres://admin:admin@91.108.243.136:5432/test_blogs
         run: yarn test
