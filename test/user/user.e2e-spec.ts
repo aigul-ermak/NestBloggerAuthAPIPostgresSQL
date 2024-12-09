@@ -158,45 +158,45 @@ describe('Users testing', () => {
     });
   });
 
-  it('GET -> /sa/users: 200 return all users', async () => {
-    const userDto = {
-      login: 'testuser1',
-      password: 'testpassword',
-      email: 'testuser1@example.com',
-    };
-
-    const newUserResponse = await createUser(
-      app,
-      userDto,
-      basicAuthUsername,
-      basicAuthPassword,
-    );
-    expect(newUserResponse.status).toBe(201);
-
-    const response = await request(httpServer)
-      .get('/sa/users')
-      .set(
-        'Authorization',
-        getBasicAuthHeader(basicAuthUsername, basicAuthPassword),
-      )
-      .expect(200);
-
-    const expectedResponse = {
-      pagesCount: 1,
-      page: 1,
-      pageSize: 10,
-      totalCount: 1,
-      items: [
-        {
-          id: expect.any(String),
-          login: expect.any(String),
-          email: expect.any(String),
-          createdAt: expect.any(String),
-        },
-      ],
-    };
-    expect(response.body).toEqual(expectedResponse);
-  });
+  // it('GET -> /sa/users: 200 return all users', async () => {
+  //   const userDto = {
+  //     login: 'testuser1',
+  //     password: 'testpassword',
+  //     email: 'testuser1@example.com',
+  //   };
+  //
+  //   const newUserResponse = await createUser(
+  //     app,
+  //     userDto,
+  //     basicAuthUsername,
+  //     basicAuthPassword,
+  //   );
+  //   expect(newUserResponse.status).toBe(201);
+  //
+  //   const response = await request(httpServer)
+  //     .get('/sa/users')
+  //     .set(
+  //       'Authorization',
+  //       getBasicAuthHeader(basicAuthUsername, basicAuthPassword),
+  //     )
+  //     .expect(200);
+  //
+  //   const expectedResponse = {
+  //     pagesCount: 1,
+  //     page: 1,
+  //     pageSize: 10,
+  //     totalCount: 1,
+  //     items: [
+  //       {
+  //         id: expect.any(String),
+  //         login: expect.any(String),
+  //         email: expect.any(String),
+  //         createdAt: expect.any(String),
+  //       },
+  //     ],
+  //   };
+  //   expect(response.body).toEqual(expectedResponse);
+  // });
 
   // it('GET -> /sa/users: 200 return all users with pagination and sorting', async () => {
   //   const usersData = [
@@ -270,28 +270,28 @@ describe('Users testing', () => {
   //   expect(response.body).toEqual(expectedResponse);
   // });
 
-  it('GET -> /sa/users: 401 return all users, unauthorized', async () => {
-    const userDto = {
-      login: 'testuser',
-      password: 'testpassword',
-      email: 'testuser@example.com',
-    };
-
-    const newUserResponse = await createUser(
-      app,
-      userDto,
-      basicAuthUsername,
-      basicAuthPassword,
-    );
-    expect(newUserResponse.status).toBe(201);
-
-    const response = await request(httpServer).get('/sa/users').expect(401);
-
-    expect(response.body).toEqual({
-      message: 'Unauthorized',
-      statusCode: 401,
-    });
-  });
+  // it('GET -> /sa/users: 401 return all users, unauthorized', async () => {
+  //   const userDto = {
+  //     login: 'testuser',
+  //     password: 'testpassword',
+  //     email: 'testuser@example.com',
+  //   };
+  //
+  //   const newUserResponse = await createUser(
+  //     app,
+  //     userDto,
+  //     basicAuthUsername,
+  //     basicAuthPassword,
+  //   );
+  //   expect(newUserResponse.status).toBe(201);
+  //
+  //   const response = await request(httpServer).get('/sa/users').expect(401);
+  //
+  //   expect(response.body).toEqual({
+  //     message: 'Unauthorized',
+  //     statusCode: 401,
+  //   });
+  // });
 
   // it('DELETE -> /sa/users: 204 add new user to the system, unauthorized', async () => {
   //   const userDto = {

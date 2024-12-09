@@ -22,7 +22,7 @@ jobs:
           - ./sql:/docker-entrypoint-initdb.d/
 
     steps:
-      # Step 1: Check out the code
+      # Step 1: Check out the co de
       - name: Checkout code
         uses: actions/checkout@v3
 
