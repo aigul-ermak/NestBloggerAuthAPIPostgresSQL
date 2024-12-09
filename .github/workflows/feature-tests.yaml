@@ -54,5 +54,9 @@ jobs:
       # Step 4: Run test
       - name: Run tests
         env:
+          HTTP_BASIC_USER: ${{ secrets.HTTP_BASIC_USER }}
+          HTTP_BASIC_PASS: ${{ secrets.HTTP_BASIC_PASS }}
           DATABASE_TEST_URL: postgres://admin:admin@91.108.243.136:5432/test_blogs
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
         run: yarn test
