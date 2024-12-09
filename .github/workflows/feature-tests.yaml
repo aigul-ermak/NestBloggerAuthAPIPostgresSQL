@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      # Step 3: Wait for Postgre SQL
+      # Step 3: Wait for PostgreSQL
       - name: Wait for PostgreSQL
         run: |
           until nc -z localhost 5432; do
