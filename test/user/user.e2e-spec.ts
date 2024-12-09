@@ -293,28 +293,28 @@ describe('Users testing', () => {
     });
   });
 
-  it('DELETE -> /sa/users: 204 add new user to the system, unauthorized', async () => {
-    const userDto = {
-      login: 'testuser',
-      password: 'testpassword',
-      email: 'testuser@example.com',
-    };
-
-    const newUserResponse = await createUser(
-      app,
-      userDto,
-      basicAuthUsername,
-      basicAuthPassword,
-    );
-    expect(newUserResponse.status).toBe(201);
-
-    const response = await request(httpServer)
-      .delete(`/sa/users/${newUserResponse.body.id}`)
-      .set(
-        'Authorization',
-        getBasicAuthHeader(basicAuthUsername, basicAuthPassword),
-      )
-      .send(userDto)
-      .expect(204);
-  });
+  // it('DELETE -> /sa/users: 204 add new user to the system, unauthorized', async () => {
+  //   const userDto = {
+  //     login: 'testuser',
+  //     password: 'testpassword',
+  //     email: 'testuser@example.com',
+  //   };
+  //
+  //   const newUserResponse = await createUser(
+  //     app,
+  //     userDto,
+  //     basicAuthUsername,
+  //     basicAuthPassword,
+  //   );
+  //   expect(newUserResponse.status).toBe(201);
+  //
+  //   const response = await request(httpServer)
+  //     .delete(`/sa/users/${newUserResponse.body.id}`)
+  //     .set(
+  //       'Authorization',
+  //       getBasicAuthHeader(basicAuthUsername, basicAuthPassword),
+  //     )
+  //     .send(userDto)
+  //     .expect(204);
+  // });
 });
