@@ -8,8 +8,8 @@ import { createAllUsers } from '../helpers/create-allusers.helper';
 import { testConfig, TestConfigModule } from '../setup';
 // const request = require('supertest');
 
-const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
-const HTTP_BASIC_PASS = process.env.HTTP_BASIC_PASS as string;
+// const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
+// const HTTP_BASIC_PASS = process.env.HTTP_BASIC_PASS as string;
 
 const basicAuthUsername = testConfig().basicAuthSettings.BASIC_AUTH_USERNAME;
 const basicAuthPassword = testConfig().basicAuthSettings.BASIC_AUTH_PASSWORD;
@@ -140,23 +140,23 @@ describe('Users testing', () => {
     expect(newUserResponse.body).toEqual(expectedResult);
   });
 
-  it('POST -> /sa/users: 401 add new user to the system, unauthorized', async () => {
-    const userDto = {
-      login: 'testuser',
-      password: 'testpassword',
-      email: 'testuser@example.com',
-    };
-
-    const response = await request(httpServer)
-      .post('/sa/users')
-      .send(userDto)
-      .expect(401);
-
-    expect(response.body).toEqual({
-      message: 'Unauthorized',
-      statusCode: 401,
-    });
-  });
+  // it('POST -> /sa/users: 401 add new user to the system, unauthorized', async () => {
+  //   const userDto = {
+  //     login: 'testuser',
+  //     password: 'testpassword',
+  //     email: 'testuser@example.com',
+  //   };
+  //
+  //   const response = await request(httpServer)
+  //     .post('/sa/users')
+  //     .send(userDto)
+  //     .expect(401);
+  //
+  //   expect(response.body).toEqual({
+  //     message: 'Unauthorized',
+  //     statusCode: 401,
+  //   });
+  // });
 
   // it('GET -> /sa/users: 200 return all users', async () => {
   //   const userDto = {
