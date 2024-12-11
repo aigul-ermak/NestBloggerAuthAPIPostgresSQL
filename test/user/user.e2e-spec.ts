@@ -38,6 +38,9 @@ describe('Users testing', () => {
   });
 
   afterAll(async () => {
+    if (httpServer) {
+      httpServer.close();
+    }
     await app.close();
   });
 
