@@ -25,7 +25,7 @@ export class UserController {
 
   @Post()
   @HttpCode(201)
-  // @UseGuards(BasicAuthGuard)
+  @UseGuards(BasicAuthGuard)
   create(@Body() createUserDto: CreateUserDto): Promise<UserOutputModel> {
     return this.commandBus.execute(new CreateUserUseCaseCommand(createUserDto));
   }
