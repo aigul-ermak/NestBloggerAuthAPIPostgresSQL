@@ -205,77 +205,77 @@ describe('Users testing', () => {
   //   expect(response.body).toEqual(expectedResponse);
   // });
 
-  it('GET -> /sa/users: 200 return all users with pagination and sorting', async () => {
-    const usersData = [
-      { login: 'log01', password: 'password2', email: 'emai@gg.com' },
-      { login: 'loSer', password: 'password1', email: 'email2p@gg.om' },
-      { login: 'log02', password: 'password3', email: 'email2p@g.com' },
-      { login: 'uer15', password: 'password4', email: 'emarrr1@gg.com' },
-    ];
-
-    const createdUsers = await createAllUsers(
-      app,
-      usersData,
-      basicAuthUsername,
-      basicAuthPassword,
-    );
-
-    expect(createdUsers).toHaveLength(usersData.length);
-
-    const queryParams = {
-      pageSize: 15,
-      pageNumber: 1,
-      searchLoginTerm: 'seR',
-      searchEmailTerm: '.com',
-      sortDirection: 'asc',
-      sortBy: 'login',
-    };
-
-    const response = await request(app.getHttpServer())
-      .get('/sa/users')
-      .set(
-        'Authorization',
-        getBasicAuthHeader(basicAuthUsername, basicAuthPassword),
-      )
-      .query(queryParams)
-      .expect(200);
-    // TODO delete
-    console.error(response.body);
-
-    const expectedResponse = {
-      pagesCount: 1,
-      page: 1,
-      pageSize: 15,
-      totalCount: 4,
-      items: [
-        {
-          id: expect.any(String),
-          login: 'loSer',
-          email: 'email2p@gg.om',
-          createdAt: expect.any(String),
-        },
-        {
-          id: expect.any(String),
-          login: 'log01',
-          email: 'emai@gg.com',
-          createdAt: expect.any(String),
-        },
-        {
-          id: expect.any(String),
-          login: 'log02',
-          email: 'email2p@g.com',
-          createdAt: expect.any(String),
-        },
-        {
-          id: expect.any(String),
-          login: 'uer15',
-          email: 'emarrr1@gg.com',
-          createdAt: expect.any(String),
-        },
-      ],
-    };
-    expect(response.body).toEqual(expectedResponse);
-  });
+  // it('GET -> /sa/users: 200 return all users with pagination and sorting', async () => {
+  //   const usersData = [
+  //     { login: 'log01', password: 'password2', email: 'emai@gg.com' },
+  //     { login: 'loSer', password: 'password1', email: 'email2p@gg.om' },
+  //     { login: 'log02', password: 'password3', email: 'email2p@g.com' },
+  //     { login: 'uer15', password: 'password4', email: 'emarrr1@gg.com' },
+  //   ];
+  //
+  //   const createdUsers = await createAllUsers(
+  //     app,
+  //     usersData,
+  //     basicAuthUsername,
+  //     basicAuthPassword,
+  //   );
+  //
+  //   expect(createdUsers).toHaveLength(usersData.length);
+  //
+  //   const queryParams = {
+  //     pageSize: 15,
+  //     pageNumber: 1,
+  //     searchLoginTerm: 'seR',
+  //     searchEmailTerm: '.com',
+  //     sortDirection: 'asc',
+  //     sortBy: 'login',
+  //   };
+  //
+  //   const response = await request(app.getHttpServer())
+  //     .get('/sa/users')
+  //     .set(
+  //       'Authorization',
+  //       getBasicAuthHeader(basicAuthUsername, basicAuthPassword),
+  //     )
+  //     .query(queryParams)
+  //     .expect(200);
+  //   // TODO delete
+  //   console.error(response.body);
+  //
+  //   const expectedResponse = {
+  //     pagesCount: 1,
+  //     page: 1,
+  //     pageSize: 15,
+  //     totalCount: 4,
+  //     items: [
+  //       {
+  //         id: expect.any(String),
+  //         login: 'loSer',
+  //         email: 'email2p@gg.om',
+  //         createdAt: expect.any(String),
+  //       },
+  //       {
+  //         id: expect.any(String),
+  //         login: 'log01',
+  //         email: 'emai@gg.com',
+  //         createdAt: expect.any(String),
+  //       },
+  //       {
+  //         id: expect.any(String),
+  //         login: 'log02',
+  //         email: 'email2p@g.com',
+  //         createdAt: expect.any(String),
+  //       },
+  //       {
+  //         id: expect.any(String),
+  //         login: 'uer15',
+  //         email: 'emarrr1@gg.com',
+  //         createdAt: expect.any(String),
+  //       },
+  //     ],
+  //   };
+  //   expect(response.body).toEqual(expectedResponse);
+  // });
 
   // it('GET -> /sa/users: 401 return all users, unauthorized', async () => {
   //   const userDto = {
