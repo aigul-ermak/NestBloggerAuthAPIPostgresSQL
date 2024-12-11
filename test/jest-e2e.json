@@ -9,5 +9,10 @@
   "testRegex": ".spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
-  }
+  },
+  "transformIgnorePatterns": [
+    "<rootDir>/test/helpers/create-user.helper.js",
+    "<rootDir>/test/setup.js",
+    "<rootDir>/node_modules/"
+  ]
 }

@@ -21,10 +21,13 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": false,
+    "types": ["node", "jest"],
+    "allowJs": true
   },
   "include": [
     "src/**/*.ts",
     "test/**/*.ts",
+    "src/**/*.js",
     "index.d.ts",
     "node_modules/@types/node/buffer.d.ts"
   ],

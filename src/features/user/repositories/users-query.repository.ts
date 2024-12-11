@@ -75,15 +75,24 @@ export class UsersQueryRepository {
     skip: number,
     limit: number,
   ): Promise<User[]> {
-    const allowedSortColumns = ['id', 'login', 'email', 'created_at'];
-    if (!allowedSortColumns.includes(sortBy)) {
-      sortBy = 'created_at';
-    }
+    const columnMapping: Record<string, string> = {
+      createdAt: 'created_at',
+      login: 'login',
+      email: 'email',
+      id: 'id',
+    };
+
+    // let dbSortBy = columnMapping[sortBy] || 'created_at';
+    //
+    // const allowedSortColumns = Object.values(columnMapping);
+    // if (!allowedSortColumns.includes(dbSortBy)) {
+    //   dbSortBy = 'created_at';
+    // }
 
     const whereClauses: string[] = [];
     const parameters: any[] = [];
-    let paramIndex = 1;
-    console.error(filter);
+    let paramIndex: number = 1;
+
     if (filter.login) {
       whereClauses.push(`login ILIKE $${paramIndex++}`);
       parameters.push(`%${filter.login}%`);
@@ -97,14 +106,16 @@ export class UsersQueryRepository {
     const whereClause = whereClauses.length
       ? `WHERE ${whereClauses.join(' OR ')}`
       : '';
-    console.error(whereClause);
-    console.error('sortBy', sortBy);
 
     const query = `
     SELECT id, login, email, created_at
     FROM users
     ${whereClause}
-    ORDER BY ${sortBy} ${sortDirection.toUpperCase()}
+    ORDER BY 
+         CASE 
+            WHEN '${sortBy}' = 'login' THEN login COLLATE "C"
+            ELSE ${sortBy}
+        END ${sortDirection.toUpperCase()}
     LIMIT $${paramIndex++}
     OFFSET $${paramIndex};
   `;

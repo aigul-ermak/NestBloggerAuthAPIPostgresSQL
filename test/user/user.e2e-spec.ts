@@ -4,12 +4,8 @@ import { INestApplication } from '@nestjs/common';
 import { applyAppSettings } from '../../src/settings/apply.app.setting';
 import { createUser } from '../helpers/create-user.helper';
 import request from 'supertest';
-import { createAllUsers } from '../helpers/create-allusers.helper';
 import { testConfig, TestConfigModule } from '../setup';
-// const request = require('supertest');
-
-// const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
-// const HTTP_BASIC_PASS = process.env.HTTP_BASIC_PASS as string;
+import { createAllUsers } from '../helpers/create-allusers.helper';
 
 const basicAuthUsername = testConfig().basicAuthSettings.BASIC_AUTH_USERNAME;
 const basicAuthPassword = testConfig().basicAuthSettings.BASIC_AUTH_PASSWORD;
@@ -42,6 +38,9 @@ describe('Users testing', () => {
   });
 
   afterAll(async () => {
+    if (httpServer) {
+      httpServer.close();
+    }
     await app.close();
   });
 
@@ -136,7 +135,7 @@ describe('Users testing', () => {
         },
       ],
     };
-    console.error(expectedResult);
+
     expect(newUserResponse.body).toEqual(expectedResult);
   });
 
@@ -173,13 +172,23 @@ describe('Users testing', () => {
   //   );
   //   expect(newUserResponse.status).toBe(201);
   //
+  //   const queryParams = {
+  //     pageSize: 10,
+  //     pageNumber: 1,
+  //     sortDirection: 'desc',
+  //     sortBy: 'created_at',
+  //   };
+  //
   //   const response = await request(httpServer)
   //     .get('/sa/users')
   //     .set(
   //       'Authorization',
   //       getBasicAuthHeader(basicAuthUsername, basicAuthPassword),
   //     )
+  //     .query(queryParams)
   //     .expect(200);
+  //
+  //   console.error('here', response.body);
   //
   //   const expectedResponse = {
   //     pagesCount: 1,
@@ -189,12 +198,13 @@ describe('Users testing', () => {
   //     items: [
   //       {
   //         id: expect.any(String),
-  //         login: expect.any(String),
-  //         email: expect.any(String),
+  //         login: userDto.login,
+  //         email: userDto.email,
   //         createdAt: expect.any(String),
   //       },
   //     ],
   //   };
+  //
   //   expect(response.body).toEqual(expectedResponse);
   // });
 
@@ -209,8 +219,8 @@ describe('Users testing', () => {
   //   const createdUsers = await createAllUsers(
   //     app,
   //     usersData,
-  //     HTTP_BASIC_USER,
-  //     HTTP_BASIC_PASS,
+  //     basicAuthUsername,
+  //     basicAuthPassword,
   //   );
   //
   //   expect(createdUsers).toHaveLength(usersData.length);
@@ -228,7 +238,7 @@ describe('Users testing', () => {
   //     .get('/sa/users')
   //     .set(
   //       'Authorization',
-  //       getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+  //       getBasicAuthHeader(basicAuthUsername, basicAuthPassword),
   //     )
   //     .query(queryParams)
   //     .expect(200);
@@ -293,28 +303,57 @@ describe('Users testing', () => {
   //   });
   // });
 
-  // it('DELETE -> /sa/users: 204 add new user to the system, unauthorized', async () => {
-  //   const userDto = {
-  //     login: 'testuser',
-  //     password: 'testpassword',
-  //     email: 'testuser@example.com',
-  //   };
-  //
-  //   const newUserResponse = await createUser(
-  //     app,
-  //     userDto,
-  //     basicAuthUsername,
-  //     basicAuthPassword,
-  //   );
-  //   expect(newUserResponse.status).toBe(201);
-  //
-  //   const response = await request(httpServer)
-  //     .delete(`/sa/users/${newUserResponse.body.id}`)
-  //     .set(
-  //       'Authorization',
-  //       getBasicAuthHeader(basicAuthUsername, basicAuthPassword),
-  //     )
-  //     .send(userDto)
-  //     .expect(204);
-  // });
+  it('DELETE -> /sa/users: 204 add new user to the system, unauthorized', async () => {
+    const userDto = {
+      login: 'testuser',
+      password: 'testpassword',
+      email: 'testuser@example.com',
+    };
+
+    const newUserResponse = await createUser(
+      app,
+      userDto,
+      basicAuthUsername,
+      basicAuthPassword,
+    );
+    expect(newUserResponse.status).toBe(201);
+
+    const response = await request(httpServer)
+      .delete(`/sa/users/${newUserResponse.body.id}`)
+      .set(
+        'Authorization',
+        getBasicAuthHeader(basicAuthUsername, basicAuthPassword),
+      )
+      .expect(204);
+  });
+
+  it('DELETE -> /sa/users: 401 delete user to the system, unauthorized', async () => {
+    const userDto = {
+      login: 'testuser',
+      password: 'testpassword',
+      email: 'testuser@example.com',
+    };
+
+    const newUserResponse = await createUser(
+      app,
+      userDto,
+      basicAuthUsername,
+      basicAuthPassword,
+    );
+    expect(newUserResponse.status).toBe(201);
+
+    const response = await request(httpServer)
+      .delete(`/sa/users/${newUserResponse.body.id}`)
+      .expect(401);
+  });
+
+  it('DELETE -> /sa/users: 404 delete user to the system, If specified user is not exists', async () => {
+    const response = await request(httpServer)
+      .delete(`/sa/users/1000`)
+      .set(
+        'Authorization',
+        getBasicAuthHeader(basicAuthUsername, basicAuthPassword),
+      )
+      .expect(404);
+  });
 });
