@@ -61,12 +61,7 @@ export default () => {
     ? (environmentVariables.NODE_ENV.toUpperCase() as Environments)
     : Environments.DEVELOPMENT;
 
-  // TODO delete
-  console.log(
-    'config-currentEnvironment',
-    environmentVariables.NODE_ENV.toUpperCase(),
-  );
-  console.log('config -Parsed Current Environment:', currentEnvironment);
+  
 
   return getConfig(environmentVariables, currentEnvironment);
 };

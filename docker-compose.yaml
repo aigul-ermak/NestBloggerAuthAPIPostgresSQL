@@ -1,0 +1,55 @@
+version: "3"
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: blogs
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: kumon
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./sql/blogs:/docker-entrypoint-initdb.d/
+    networks:
+     - app-network
+
+  test-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: test_blogs
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 54321
+    ports:
+      - '5434:5432'
+    volumes:
+      - test-db-data:/var/lib/postgresql/data 
+      - ./sql/test-db:/docker-entrypoint-initdb.d/
+    networks:
+      - app-network
+      
+    
+  nestjs-app:
+    build:
+      context: .
+    restart: always
+    ports:
+      - '3002:3000'     
+    environment:
+      DATABASE_URL: postgres://admin:kumon@postgres:5432/blogs
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+     
+
+
+volumes:
+  postgres-data: # Volume for the 'postgres' service
+  test-db-data:  # Volume for the 'test-db' service
+  
+networks:
+  app-network:
+    driver: bridge
