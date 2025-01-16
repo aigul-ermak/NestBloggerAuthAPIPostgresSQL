@@ -28,7 +28,7 @@ services:
     volumes:
       - test-db-data:/var/lib/postgresql/data
       - ./sql/init-scripts:/docker-entrypoint-initdb.d
-      - ./sql/tests:/docker-entrypoint-initdb.d/sql/tests
+      - ./sql/test_blogs:/docker-entrypoint-initdb.d/sql/test_blogs
     networks:
       - app-network
       
