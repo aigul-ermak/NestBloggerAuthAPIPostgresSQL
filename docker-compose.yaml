@@ -20,7 +20,7 @@ services:
     image: postgres
     restart: always
     environment:
-#      POSTGRES_DB: test_blogs
+      POSTGRES_DB: test_blogs
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: 54321
     ports:
