@@ -1,11 +1,8 @@
--- Check if the 'test_blogs' database exists, and create it if not
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'test_blogs') THEN
-        CREATE DATABASE test_blogs;
-    END IF;
-END
-$$;
+-- Create the 'test_blogs' database if it doesn't exist
+SELECT 'CREATE DATABASE test_blogs'
+WHERE NOT EXISTS (
+    SELECT FROM pg_database WHERE datname = 'test_blogs'
+)\gexec;
 
 -- Create a user for the test database if it doesn't already exist
 DO $$
