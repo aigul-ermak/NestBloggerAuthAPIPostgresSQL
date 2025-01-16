@@ -1,3 +1,12 @@
+-- Create the 'test_blogs' database if it doesn't exist
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'test_blogs') THEN
+        PERFORM dblink_exec('dbname=postgres user=postgres', 'CREATE DATABASE test_blogs');
+    END IF;
+END
+$$;
+
 -- Create a user for the test database if it doesn't already exist
 DO $$
 BEGIN
