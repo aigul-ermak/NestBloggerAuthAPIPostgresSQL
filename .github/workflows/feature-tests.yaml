@@ -45,7 +45,7 @@ jobs:
       # Step 3: Wait for PostgreSQL
       - name: Wait for PostgreSQL
         run: |
-          until nc -z localhost 5432; do
+          until nc -z localhost 5434; do
             echo "Waiting for database..."
             sleep 2
           done
