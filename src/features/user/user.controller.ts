@@ -27,7 +27,14 @@ export class UserController {
   @HttpCode(201)
   @UseGuards(BasicAuthGuard)
   create(@Body() createUserDto: CreateUserDto): Promise<UserOutputModel> {
-    return this.commandBus.execute(new CreateUserUseCaseCommand(createUserDto));
+    try {
+      return this.commandBus.execute(
+        new CreateUserUseCaseCommand(createUserDto),
+      );
+    } catch (error) {
+      console.error('Error in /sa/users:', (error as Error).message);
+      throw error;
+    }
   }
 
   @Get()
