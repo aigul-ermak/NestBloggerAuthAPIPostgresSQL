@@ -34,9 +34,14 @@ export class UserController {
   @HttpCode(200)
   @UseGuards(BasicAuthGuard)
   findAll(@Query() sortData: SortUserDto) {
-    //TODO delete
-    console.error('Get all users');
-    return this.commandBus.execute(new GetAllUsersUseCaseCommand(sortData));
+    try {
+      //TODO delete
+      console.error('Get all users');
+      return this.commandBus.execute(new GetAllUsersUseCaseCommand(sortData));
+    } catch (error) {
+      console.error('Error in /sa/users:', (error as Error).message);
+      throw error;
+    }
   }
 
   // @Get(':id')
