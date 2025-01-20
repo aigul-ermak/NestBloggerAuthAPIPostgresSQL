@@ -24,16 +24,18 @@ export class CreateUserRegistrationUseCase
   ) {}
 
   async execute(command: CreateUserRegistrationUseCaseCommand): Promise<void> {
-    const user: User =
-      (await this.usersQueryRepository.findOneByLogin(
-        command.createUserDto.login,
-      )) ||
-      (await this.usersQueryRepository.findOneByEmail(
-        command.createUserDto.email,
-      ));
+    const userByLogin = await this.usersQueryRepository.findOneByLogin(
+      command.createUserDto.login,
+    );
 
-    if (user) {
-      const field = user ? 'login' : 'email';
+    const userByEmail = await this.usersQueryRepository.findOneByEmail(
+      command.createUserDto.email,
+    );
+
+    if (userByLogin || userByEmail) {
+      const field = userByLogin ? 'login' : 'email';
+      // todo
+      console.log('the field is', field);
       throw new BadRequestException({
         errorsMessages: [
           {
