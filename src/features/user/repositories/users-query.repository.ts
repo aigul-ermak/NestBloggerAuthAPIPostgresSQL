@@ -114,7 +114,7 @@ export class UsersQueryRepository {
     ORDER BY 
          CASE 
             WHEN '${sortBy}' = 'login' THEN login COLLATE "C"
-            ELSE ${sortBy}
+            ELSE ${sortBy}::VARCHAR
         END ${sortDirection.toUpperCase()}
     LIMIT $${paramIndex++}
     OFFSET $${paramIndex};
