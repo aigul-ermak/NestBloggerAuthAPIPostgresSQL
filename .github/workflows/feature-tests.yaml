@@ -13,11 +13,11 @@ jobs:
       test-db:
         image: postgres:15
         ports:
-          - 5432:5432
+          - 5434:5432
         env:
-          DATABASE_TEST_URL: test_blogs
-          POSTGRES_USER: admin
-          POSTGRES_PASSWORD: admin
+          DATABASE_TEST_URL: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         volumes:
           - ./sql:/docker-entrypoint-initdb.d/
 
@@ -56,7 +56,7 @@ jobs:
         env:
           HTTP_BASIC_USER: ${{ secrets.HTTP_BASIC_USER }}
           HTTP_BASIC_PASS: ${{ secrets.HTTP_BASIC_PASS }}
-          DATABASE_TEST_URL: postgres://admin:admin@91.108.243.136:5432/test_blogs
+          DATABASE_TEST_URL: postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@5.253.188.129:5434/${{ secrets.POSTGRES_DB }}
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
         run: yarn test
