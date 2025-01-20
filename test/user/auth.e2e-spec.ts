@@ -92,6 +92,92 @@ describe('Auth testing', () => {
     expect(response.body).toEqual(expectedResult);
   });
 
+  it('POST -> "/auth/registration": should return error if email already exist; status 400', async () => {
+    const userRegistrationDtoFirst = {
+      login: 'userD',
+      password: 'password',
+      email: 'example@example.com',
+    };
+
+    const userRegistrationDtoSecond = {
+      login: 'userSecond',
+      password: 'password',
+      email: 'example@example.com',
+    };
+
+    const response1 = await request(httpServer)
+      .post('/auth/registration')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(userRegistrationDtoFirst)
+      .expect(204);
+
+    const response = await request(httpServer)
+      .post('/auth/registration')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(userRegistrationDtoSecond)
+      .expect(400);
+
+    const expectedResult = {
+      errorsMessages: [
+        {
+          message: 'User with this email already exists',
+          field: 'email',
+        },
+      ],
+    };
+    console.error('expectedResult', expectedResult);
+    expect(response.body).toEqual(expectedResult);
+  });
+
+  it('POST -> "/auth/registration": should return error if login already exist; status 400', async () => {
+    const userRegistrationDtoFirst = {
+      login: 'user',
+      password: 'password',
+      email: 'example1@example.com',
+    };
+
+    const userRegistrationDtoSecond = {
+      login: 'user',
+      password: 'password',
+      email: 'example2@example.com',
+    };
+
+    const response1 = await request(httpServer)
+      .post('/auth/registration')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(userRegistrationDtoFirst)
+      .expect(204);
+
+    const response = await request(httpServer)
+      .post('/auth/registration')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(userRegistrationDtoSecond)
+      .expect(400);
+
+    const expectedResult = {
+      errorsMessages: [
+        {
+          message: 'User with this login already exists',
+          field: 'login',
+        },
+      ],
+    };
+
+    expect(response.body).toEqual(expectedResult);
+  });
+
   // it('POST -> auth/login: should return 200 for login user', async () => {
   //   const newUserDto = {
   //     login: 'user1',
