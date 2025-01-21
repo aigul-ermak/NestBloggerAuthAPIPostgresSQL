@@ -131,7 +131,7 @@ describe('Auth testing', () => {
         },
       ],
     };
-    console.error('expectedResult', expectedResult);
+
     expect(response.body).toEqual(expectedResult);
   });
 
@@ -178,40 +178,96 @@ describe('Auth testing', () => {
     expect(response.body).toEqual(expectedResult);
   });
 
-  // it('POST -> auth/login: should return 200 for login user', async () => {
-  //   const newUserDto = {
-  //     login: 'user1',
-  //     password: 'password',
-  //     email: 'example1@example.com',
-  //   };
-  //
-  //   const newUserResponse = await createUser(
-  //     app,
-  //     newUserDto,
-  //     HTTP_BASIC_USER,
-  //     HTTP_BASIC_PASS,
-  //   );
-  //
-  //   expect(newUserResponse.status).toBe(201);
-  //
-  //   const response = await request(httpServer)
-  //     .post(`/auth/login`)
-  //     .set(
-  //       'Authorization',
-  //       getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
-  //     )
-  //     .send({
-  //       loginOrEmail: newUserDto.login,
-  //       password: newUserDto.password,
-  //     })
-  //     .expect(200);
-  //
-  //   const accessToken = response.body;
-  //
-  //   const expectedResult = {
-  //     accessToken: expect.any(String),
-  //   };
-  //
-  //   expect(response.body).toEqual(expectedResult);
-  // });
+  it('POST -> "/auth/registration-email-resending": should resend email confirmation and return 204', async () => {
+    const userRegistrationDto = {
+      login: 'user',
+      password: 'password',
+      email: 'example1@example.com',
+    };
+
+    // register the user
+    await request(httpServer)
+      .post('/auth/registration')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(userRegistrationDto)
+      .expect(204);
+
+    const response = await request(httpServer)
+      .post('/auth/registration-email-resending')
+      .send({ email: userRegistrationDto.email })
+      .expect(204);
+
+    expect(response.text).toEqual('');
+  });
+
+  it('POST -> "/auth/registration-email-resending": should return 400 if email does not exist', async () => {
+    const userRegistrationDto = {
+      login: 'user',
+      password: 'password',
+      email: 'example@example.com',
+    };
+
+    // register the user
+    await request(httpServer)
+      .post('/auth/registration')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(userRegistrationDto)
+      .expect(204);
+
+    const response = await request(httpServer)
+      .post('/auth/registration-email-resending')
+      .send({ email: 'examplWrong@example.com' })
+      .expect(400);
+
+    const expectedResult = {
+      errorsMessages: [
+        {
+          message: 'Email does not exist',
+          field: 'email',
+        },
+      ],
+    };
+
+    expect(response.body).toEqual(expectedResult);
+  });
+
+  it('POST -> "/auth/registration-email-resending": should return 400 if email is already confirmed', async () => {
+    const userRegistrationDto = {
+      login: 'user',
+      password: 'password',
+      email: 'example@example.com',
+    };
+
+    // register the user
+    await request(httpServer)
+      .post('/auth/registration')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(userRegistrationDto)
+      .expect(204);
+
+    const response = await request(httpServer)
+      .post('/auth/registration-email-resending')
+      .send({ email: 'examplWrong@example.com' })
+      .expect(400);
+
+    const expectedResult = {
+      errorsMessages: [
+        {
+          message: 'Email does not exist',
+          field: 'email',
+        },
+      ],
+    };
+
+    expect(response.body).toEqual(expectedResult);
+  });
 });
