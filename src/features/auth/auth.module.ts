@@ -11,11 +11,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SessionModule } from '../session/session.module';
 import { SendNewCodeToEmailUseCase } from './usecases/sendNewCodeToEmailUseCase';
+import { ConfirmEmailUseCase } from './usecases/confirmEmailUseCase';
 
 const CommandHandlers = [
   CreateUserRegistrationUseCase,
   LoginUserUseCase,
   SendNewCodeToEmailUseCase,
+  ConfirmEmailUseCase,
 ];
 
 @Module({
