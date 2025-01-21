@@ -3,7 +3,7 @@ import { AppModule } from '../../src/app.module';
 import { INestApplication } from '@nestjs/common';
 import { applyAppSettings } from '../../src/settings/apply.app.setting';
 import request from 'supertest';
-import { createUser } from '../helpers/create-user.helper';
+import { UsersQueryRepository } from '../../src/features/user/repositories/users-query.repository';
 
 const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
 const HTTP_BASIC_PASS = process.env.HTTP_BASIC_PASS as string;
@@ -18,6 +18,7 @@ const getBasicAuthHeader = (username: string, password: string) => {
 describe('Auth testing', () => {
   let app: INestApplication;
   let httpServer;
+  let usersQueryRepository;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -27,6 +28,9 @@ describe('Auth testing', () => {
     app = moduleFixture.createNestApplication();
     applyAppSettings(app);
     await app.init();
+
+    usersQueryRepository =
+      moduleFixture.get<UsersQueryRepository>(UsersQueryRepository);
 
     httpServer = app.getHttpServer();
   });
@@ -264,6 +268,94 @@ describe('Auth testing', () => {
         {
           message: 'Email does not exist',
           field: 'email',
+        },
+      ],
+    };
+
+    expect(response.body).toEqual(expectedResult);
+  });
+
+  it('POST -> "/auth/registration-confirmation": should verify the email, activate the account, and return a 204', async () => {
+    const userRegistrationDto = {
+      login: 'user',
+      password: 'password',
+      email: 'example1@example.com',
+    };
+
+    // register the user
+    await request(httpServer)
+      .post('/auth/registration')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(userRegistrationDto)
+      .expect(204);
+
+    // sent confirmation code
+    await request(httpServer)
+      .post('/auth/registration-email-resending')
+      .send({ email: userRegistrationDto.email })
+      .expect(204);
+
+    const user = await usersQueryRepository.findOneByEmail(
+      userRegistrationDto.email,
+    );
+
+    const confirmationCode = user.confirmationCode;
+
+    const response = await request(httpServer)
+      .post('/auth/registration-confirmation')
+      .send({ code: confirmationCode })
+      .expect(204);
+
+    expect(response.text).toEqual('');
+
+    const updatedUser = await usersQueryRepository.findOneByEmail(
+      userRegistrationDto.email,
+    );
+    expect(updatedUser.isConfirmed).toBe(true);
+  });
+
+  it('POST -> "/auth/registration-confirmation": should return a 400 confirmation code is incorrect', async () => {
+    const userRegistrationDto = {
+      login: 'user',
+      password: 'password',
+      email: 'example1@example.com',
+    };
+
+    // register the user
+    await request(httpServer)
+      .post('/auth/registration')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(userRegistrationDto)
+      .expect(204);
+
+    // sent confirmation code
+    await request(httpServer)
+      .post('/auth/registration-email-resending')
+      .send({ email: userRegistrationDto.email })
+      .expect(204);
+
+    // const user = await usersQueryRepository.findOneByEmail(
+    //   userRegistrationDto.email,
+    // );
+
+    const confirmationCode = '77e4f27e-0d78-4140-b7ef-f3d64cb4da7a';
+
+    const response = await request(httpServer)
+      .post('/auth/registration-confirmation')
+      .send({ code: confirmationCode })
+      .expect(400);
+
+    const expectedResult = {
+      errorsMessages: [
+        {
+          message: 'Confirmation code does not exist',
+          field: 'code',
         },
       ],
     };

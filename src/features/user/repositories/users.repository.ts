@@ -37,4 +37,12 @@ export class UsersRepository {
 
     return result.rowCount > 0;
   }
+
+  async updateConfirmation(userId: number): Promise<boolean> {
+    const query = `UPDATE users SET is_confirmed = true WHERE id = $1`;
+
+    const result = await this.pool.query(query, [userId]);
+
+    return result.rowCount > 0;
+  }
 }

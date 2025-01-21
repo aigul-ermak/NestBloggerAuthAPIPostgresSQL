@@ -16,6 +16,7 @@ import { UserLoginDto } from './models/login-user.input.dto';
 import { LoginUserUseCaseCommand } from './usecases/loginUserUseCase';
 import { EmailDto } from './models/email.input.dto';
 import { SendNewCodeToEmailUseCaseCommand } from './usecases/sendNewCodeToEmailUseCase';
+import { ConfirmEmailUseCaseCommand } from './usecases/confirmEmailUseCase';
 
 @UseGuards(ThrottlerGuard)
 @Controller('auth')
@@ -60,5 +61,11 @@ export class AuthController {
     await this.commandBus.execute(
       new SendNewCodeToEmailUseCaseCommand(resendEmailDto),
     );
+  }
+
+  @Post('/registration-confirmation')
+  @HttpCode(204)
+  async confirmRegistration(@Body('code') code: string): Promise<void> {
+    await this.commandBus.execute(new ConfirmEmailUseCaseCommand(code));
   }
 }
