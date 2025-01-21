@@ -27,4 +27,14 @@ export class UsersRepository {
     }
     return true;
   }
+
+  async updateUserCode(userId: number, newCode: string): Promise<boolean> {
+    const query = `UPDATE users SET confirmation_code = $2 WHERE id = $1`;
+
+    const values = [userId, newCode];
+
+    const result = await this.pool.query(query, values);
+
+    return result.rowCount > 0;
+  }
 }
