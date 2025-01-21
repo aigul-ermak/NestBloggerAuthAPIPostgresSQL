@@ -49,9 +49,7 @@ export class GetAllUsersUseCase
       await this.usersQueryRepository.countDocuments(filter);
 
     const pageCount: number = Math.ceil(totalCount / pageSize);
-    //TODO delete
 
-    console.error(sortBy);
     return {
       pagesCount: pageCount,
       page: +pageNumber,
