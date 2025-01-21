@@ -10,8 +10,13 @@ import { LoginUserUseCase } from './usecases/loginUserUseCase';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SessionModule } from '../session/session.module';
+import { SendNewCodeToEmailUseCase } from './usecases/sendNewCodeToEmailUseCase';
 
-const CommandHandlers = [CreateUserRegistrationUseCase, LoginUserUseCase];
+const CommandHandlers = [
+  CreateUserRegistrationUseCase,
+  LoginUserUseCase,
+  SendNewCodeToEmailUseCase,
+];
 
 @Module({
   imports: [
