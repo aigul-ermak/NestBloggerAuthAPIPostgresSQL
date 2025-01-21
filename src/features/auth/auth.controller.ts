@@ -14,6 +14,8 @@ import { CreateUserRegistrationUseCaseCommand } from './usecases/createUserRegis
 import { Request, Response } from 'express';
 import { UserLoginDto } from './models/login-user.input.dto';
 import { LoginUserUseCaseCommand } from './usecases/loginUserUseCase';
+import { EmailDto } from './models/email.input.dto';
+import { SendNewCodeToEmailUseCaseCommand } from './usecases/sendNewCodeToEmailUseCase';
 
 @UseGuards(ThrottlerGuard)
 @Controller('auth')
@@ -49,6 +51,14 @@ export class AuthController {
   async registration(@Body() createUserDto: CreateUserDto): Promise<void> {
     await this.commandBus.execute(
       new CreateUserRegistrationUseCaseCommand(createUserDto),
+    );
+  }
+
+  @Post('/registration-email-resending')
+  @HttpCode(204)
+  async sendNewCodeToEmail(@Body() resendEmailDto: EmailDto): Promise<void> {
+    await this.commandBus.execute(
+      new SendNewCodeToEmailUseCaseCommand(resendEmailDto),
     );
   }
 }
