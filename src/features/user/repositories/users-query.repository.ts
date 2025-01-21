@@ -154,4 +154,17 @@ export class UsersQueryRepository {
     const result = await this.pool.query(query, parameters);
     return parseInt(result.rows[0].count, 10);
   }
+
+  async findUserByConfirmationCode(code: string): Promise<User | null> {
+    const query = `SELECT id, confirmation_code AS "confirmationCode", is_confirmed AS "isConfirmed" FROM users WHERE confirmation_code = $1;
+  `;
+
+    const result = await this.pool.query(query, [code]);
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    return result.rows[0];
+  }
 }
