@@ -12,12 +12,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SessionModule } from '../session/session.module';
 import { SendNewCodeToEmailUseCase } from './usecases/sendNewCodeToEmailUseCase';
 import { ConfirmEmailUseCase } from './usecases/confirmEmailUseCase';
+import { GetMeUseCase } from './usecases/getMeUseCase';
 
 const CommandHandlers = [
   CreateUserRegistrationUseCase,
   LoginUserUseCase,
   SendNewCodeToEmailUseCase,
   ConfirmEmailUseCase,
+  GetMeUseCase,
 ];
 
 @Module({

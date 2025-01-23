@@ -4,9 +4,14 @@ import { INestApplication } from '@nestjs/common';
 import { applyAppSettings } from '../../src/settings/apply.app.setting';
 import request from 'supertest';
 import { UsersQueryRepository } from '../../src/features/user/repositories/users-query.repository';
+import { createUser } from '../helpers/create-user.helper';
+import { testConfig } from '../setup';
 
 const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
 const HTTP_BASIC_PASS = process.env.HTTP_BASIC_PASS as string;
+
+const basicAuthUsername = testConfig().basicAuthSettings.BASIC_AUTH_USERNAME;
+const basicAuthPassword = testConfig().basicAuthSettings.BASIC_AUTH_PASSWORD;
 
 const getBasicAuthHeader = (username: string, password: string) => {
   const base64Credentials = Buffer.from(`${username}:${password}`).toString(
@@ -361,5 +366,60 @@ describe('Auth testing', () => {
     };
 
     expect(response.body).toEqual(expectedResult);
+  });
+
+  it('GET -> "/auth/me": should return 200: user data received', async () => {
+    const userDto = {
+      login: 'testuser',
+      password: 'testpassword',
+      email: 'testuser@example.com',
+    };
+
+    const newUserResponse = await createUser(
+      app,
+      userDto,
+      basicAuthUsername,
+      basicAuthPassword,
+    );
+    expect(newUserResponse.status).toBe(201);
+
+    const currentUserLoginDto = {
+      loginOrEmail: 'testuser@example.com',
+      password: 'testpassword',
+    };
+
+    const loginUser = await request(httpServer)
+      .post(`/auth/login`)
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(currentUserLoginDto)
+      .expect(200);
+
+    const accessToken = loginUser.body.accessToken;
+
+    const response = await request(httpServer)
+      .get('/auth/me')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200);
+
+    const expectedResult = {
+      email: userDto.email,
+      login: userDto.login,
+      userId: expect.any(Number),
+    };
+
+    expect(response.body).toEqual(expectedResult);
+  });
+
+  it('GET -> "/auth/me": should return 401: user unauthorized', async () => {
+    const accessToken =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbk9yRW1haWwiOiJhaWcyIiwiaWQiOiI2NzA5M2ExNzk4YjEwY2NhZDE4OTEwMjkiLCJpYXQiOjE3Mjg2NTc5NDUsImV4cCI6MTcyODY1Nzk1NX0.B4lKhZD2XuzKjhUMX5CBicMT0lm_59VtkH5rKDMlf9U';
+
+    const response = await request(httpServer)
+      .get('/auth/me')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(401);
   });
 });

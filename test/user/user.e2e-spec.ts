@@ -5,7 +5,6 @@ import { applyAppSettings } from '../../src/settings/apply.app.setting';
 import { createUser } from '../helpers/create-user.helper';
 import request from 'supertest';
 import { testConfig, TestConfigModule } from '../setup';
-import { createAllUsers } from '../helpers/create-allusers.helper';
 
 const basicAuthUsername = testConfig().basicAuthSettings.BASIC_AUTH_USERNAME;
 const basicAuthPassword = testConfig().basicAuthSettings.BASIC_AUTH_PASSWORD;
@@ -62,7 +61,7 @@ describe('Users testing', () => {
     const expectedUser = {
       login: userDto.login,
       email: userDto.email,
-      id: expect.any(String),
+      id: expect.any(Number),
       createdAt: expect.stringMatching(
         /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/,
       ),

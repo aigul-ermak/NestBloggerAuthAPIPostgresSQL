@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
@@ -17,6 +19,8 @@ import { LoginUserUseCaseCommand } from './usecases/loginUserUseCase';
 import { EmailDto } from './models/email.input.dto';
 import { SendNewCodeToEmailUseCaseCommand } from './usecases/sendNewCodeToEmailUseCase';
 import { ConfirmEmailUseCaseCommand } from './usecases/confirmEmailUseCase';
+import { GetMeUseCaseCommand } from './usecases/getMeUseCase';
+import { JwtAuthGuard } from '../../base/guards/jwt-guards/jwt.auth.guard';
 
 @UseGuards(ThrottlerGuard)
 @Controller('auth')
@@ -67,5 +71,19 @@ export class AuthController {
   @HttpCode(204)
   async confirmRegistration(@Body('code') code: string): Promise<void> {
     await this.commandBus.execute(new ConfirmEmailUseCaseCommand(code));
+  }
+
+  @Get('/me')
+  @HttpCode(200)
+  @UseGuards(JwtAuthGuard)
+  async getUser(
+    @Req() request: Request,
+  ): Promise<{ email: string; login: string; userId: number }> {
+    if (!request.user)
+      throw new UnauthorizedException('User info was not provided');
+
+    const { userId } = request.user;
+
+    return this.commandBus.execute(new GetMeUseCaseCommand(userId));
   }
 }
