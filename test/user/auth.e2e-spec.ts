@@ -368,7 +368,7 @@ describe('Auth testing', () => {
     expect(response.body).toEqual(expectedResult);
   });
 
-  it('GET -> "/auth/me": should return 200: user data received', async () => {
+  it('GET -> "/auth/me": should return 200 user data received', async () => {
     const userDto = {
       login: 'testuser',
       password: 'testpassword',
@@ -407,13 +407,13 @@ describe('Auth testing', () => {
     const expectedResult = {
       email: userDto.email,
       login: userDto.login,
-      userId: expect.any(Number),
+      userId: expect.any(String),
     };
 
     expect(response.body).toEqual(expectedResult);
   });
 
-  it('GET -> "/auth/me": should return 401: user unauthorized', async () => {
+  it('GET -> "/auth/me": should return 401 user unauthorized', async () => {
     const accessToken =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbk9yRW1haWwiOiJhaWcyIiwiaWQiOiI2NzA5M2ExNzk4YjEwY2NhZDE4OTEwMjkiLCJpYXQiOjE3Mjg2NTc5NDUsImV4cCI6MTcyODY1Nzk1NX0.B4lKhZD2XuzKjhUMX5CBicMT0lm_59VtkH5rKDMlf9U';
 
