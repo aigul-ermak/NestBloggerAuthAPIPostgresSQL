@@ -1,5 +1,5 @@
 export class UserOutputModel {
-  id: number;
+  id: string;
   login: string;
   email: string;
   createdAt: Date;
@@ -8,7 +8,7 @@ export class UserOutputModel {
 export const UserOutputModelMapper = (user: any): UserOutputModel => {
   const outputModel: UserOutputModel = new UserOutputModel();
 
-  outputModel.id = user.id;
+  outputModel.id = user.id.toString();
   outputModel.login = user.login;
   outputModel.email = user.email;
   outputModel.createdAt = new Date(user.created_at);
@@ -17,7 +17,7 @@ export const UserOutputModelMapper = (user: any): UserOutputModel => {
 };
 
 export class UserWithIdOutputModel {
-  id: number;
+  id: string;
   accountData: {
     passwordRecoveryCode: string;
     createdAt: Date;

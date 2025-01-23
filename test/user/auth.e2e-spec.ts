@@ -407,7 +407,7 @@ describe('Auth testing', () => {
     const expectedResult = {
       email: userDto.email,
       login: userDto.login,
-      userId: expect.any(Number),
+      userId: expect.any(String),
     };
 
     expect(response.body).toEqual(expectedResult);
