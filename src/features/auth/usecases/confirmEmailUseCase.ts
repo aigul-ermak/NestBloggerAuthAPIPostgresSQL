@@ -43,9 +43,6 @@ export class ConfirmEmailUseCase
       });
     }
 
-    console.log('user', user.confirmationCode);
-    console.log('command code', command.code);
-
     if (user.confirmationCode === command.code) {
       return await this.usersRepository.updateConfirmation(user.id);
     }
