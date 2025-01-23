@@ -78,7 +78,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async getUser(
     @Req() request: Request,
-  ): Promise<{ email: string; login: string; userId: number }> {
+  ): Promise<{ email: string; login: string; userId: string }> {
     if (!request.user)
       throw new UnauthorizedException('User info was not provided');
 

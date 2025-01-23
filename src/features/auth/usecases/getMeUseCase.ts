@@ -13,7 +13,7 @@ export class GetMeUseCase implements ICommandHandler<GetMeUseCaseCommand> {
 
   async execute(
     command: GetMeUseCaseCommand,
-  ): Promise<{ email: string; login: string; userId: number }> {
+  ): Promise<{ email: string; login: string; userId: string }> {
     const user: User | null = await this.usersQueryRepository.findOneById(
       command.userId,
     );
@@ -25,7 +25,7 @@ export class GetMeUseCase implements ICommandHandler<GetMeUseCaseCommand> {
     return {
       email: user.email,
       login: user.login,
-      userId: user.id,
+      userId: user.id.toString(),
     };
   }
 }
