@@ -68,7 +68,9 @@ export class RefreshTokensUseCase
     };
 
     const iatDate = new Date(decodedToken.iat * 1000);
+    console.log('iatDate in update session', iatDate);
     const expDate = new Date(decodedToken.exp * 1000);
+    console.log('iatDate in update session', expDate);
 
     const newSessionUser = {
       userId: command.userId,

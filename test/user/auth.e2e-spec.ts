@@ -461,6 +461,23 @@ describe('Auth testing', () => {
     expect(refreshToken.body).toEqual({
       accessToken: expect.any(String),
     });
+
+    // const refreshInvalidToken = await request(httpServer)
+    //   .post('/auth/refresh-token')
+    //   .set('Cookie', cookie)
+    //   .send({})
+    //   .expect(401);
+    //
+    // const expectedResult = {
+    //   errorsMessages: [
+    //     {
+    //       message: 'Refresh token has become invalid',
+    //       field: 'refreshToken',
+    //     },
+    //   ],
+    // };
+
+    // expect(refreshInvalidToken.body).toEqual(expectedResult);
   });
 
   it('POST -> "/auth/refresh-token": should return 401 ', async () => {

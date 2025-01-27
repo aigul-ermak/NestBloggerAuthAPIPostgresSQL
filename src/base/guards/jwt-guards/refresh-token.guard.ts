@@ -9,6 +9,7 @@ import { RefreshTokenType } from '../../../features/auth/models/types/refreshTok
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { SessionQueryRepository } from '../../../features/session/repositories/session-query.repository';
+import { Session } from '../../../features/session/entities/session.entity';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
@@ -39,11 +40,13 @@ export class RefreshTokenGuard implements CanActivate {
       const { userId, userIP, deviceId, userAgent }: RefreshTokenType = decoded;
 
       const iatDate = new Date(decoded.iat * 1000);
+      console.log('iatDate', iatDate);
 
-      const session = await this.sessionQueryRepository.getUserSession(
+      const session: Session = await this.sessionQueryRepository.getUserSession(
         userId,
         deviceId,
       );
+      console.log('session', session);
 
       if (!session) {
         throw new UnauthorizedException(
@@ -51,13 +54,12 @@ export class RefreshTokenGuard implements CanActivate {
         );
       }
 
-      if (session.expDate < new Date()) {
+      console.log('iat in guard', iatDate);
+      console.log('session iat in guard', session.iatDate);
+
+      if (session.iatDate.getTime() !== iatDate.getTime()) {
         throw new UnauthorizedException(`Refresh token has become invalid'`);
       }
-
-      // if (session.iatDate.toISOString() !== iatDate.toISOString()) {
-      //   throw new UnauthorizedException('Invalid session iat date');
-      // }
 
       request.user = { userId, userIP, deviceId, userAgent };
 

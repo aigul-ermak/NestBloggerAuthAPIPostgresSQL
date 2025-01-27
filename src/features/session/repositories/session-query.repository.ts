@@ -17,7 +17,23 @@ export class SessionQueryRepository {
       [userId, deviceId],
     );
 
-    return result.rows[0] || null;
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    const row = result.rows[0];
+
+    const session: Session = {
+      id: row.id,
+      userId: row.user_id,
+      deviceId: row.device_id,
+      ip: row.ip,
+      title: row.title,
+      iatDate: new Date(row.iat_date),
+      expDate: new Date(row.exp_date),
+    };
+
+    return session;
   }
 
   async getUserSessionByDeviceId(deviceId: string): Promise<Session | null> {
