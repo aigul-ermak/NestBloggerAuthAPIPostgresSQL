@@ -13,6 +13,8 @@ import { SessionModule } from '../session/session.module';
 import { SendNewCodeToEmailUseCase } from './usecases/sendNewCodeToEmailUseCase';
 import { ConfirmEmailUseCase } from './usecases/confirmEmailUseCase';
 import { GetMeUseCase } from './usecases/getMeUseCase';
+import { RefreshTokensUseCase } from './usecases/refreshTokensUseCase';
+import { LogoutUserUseCase } from './usecases/logoutUserUseCase';
 
 const CommandHandlers = [
   CreateUserRegistrationUseCase,
@@ -20,6 +22,8 @@ const CommandHandlers = [
   SendNewCodeToEmailUseCase,
   ConfirmEmailUseCase,
   GetMeUseCase,
+  RefreshTokensUseCase,
+  LogoutUserUseCase,
 ];
 
 @Module({
