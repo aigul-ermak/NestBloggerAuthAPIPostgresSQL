@@ -25,8 +25,8 @@ export class SessionRepository {
   async updateSession(sessionUser: Partial<Session>): Promise<void> {
     await this.pool.query(
       `UPDATE sessions
-       SET "iatDate" = $1, "expDate" = $2
-       WHERE "userId" = $3 AND "deviceId" = $4`,
+       SET "iat_date" = $1, "exp_date" = $2
+       WHERE "user_id" = $3 AND "device_id" = $4`,
       [
         sessionUser.iatDate,
         sessionUser.expDate,
@@ -36,14 +36,12 @@ export class SessionRepository {
     );
   }
 
-  async deleteSession(userId: string, deviceId: string): Promise<boolean> {
+  async deleteSession(userId: number, deviceId: string): Promise<boolean> {
     const result = await this.pool.query(
       `DELETE FROM sessions
-       WHERE "userId" = $1 AND "deviceId" = $2`,
+       WHERE "user_id" = $1 AND "device_id" = $2`,
       [userId, deviceId],
     );
-
-    // return result.affectedRows > 0;
     return true;
   }
 

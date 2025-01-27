@@ -21,6 +21,9 @@ import { SendNewCodeToEmailUseCaseCommand } from './usecases/sendNewCodeToEmailU
 import { ConfirmEmailUseCaseCommand } from './usecases/confirmEmailUseCase';
 import { GetMeUseCaseCommand } from './usecases/getMeUseCase';
 import { JwtAuthGuard } from '../../base/guards/jwt-guards/jwt.auth.guard';
+import { RefreshTokenGuard } from '../../base/guards/jwt-guards/refresh-token.guard';
+import { RefreshTokensUseCaseCommand } from './usecases/refreshTokensUseCase';
+import { LogoutUserUseCaseCommand } from './usecases/logoutUserUseCase';
 
 @UseGuards(ThrottlerGuard)
 @Controller('auth')
@@ -85,5 +88,49 @@ export class AuthController {
     const { userId } = request.user;
 
     return this.commandBus.execute(new GetMeUseCaseCommand(userId));
+  }
+
+  @Post('/refresh-token')
+  @HttpCode(200)
+  @UseGuards(RefreshTokenGuard)
+  async refreshToken(@Req() request: Request, @Res() res: Response) {
+    if (!request.user)
+      throw new UnauthorizedException('User info was not provided');
+    const { userId, deviceId, userIP, userAgent } = request.user;
+
+    const { accessToken, refreshToken } = await this.commandBus.execute(
+      new RefreshTokensUseCaseCommand(userId, deviceId, userIP, userAgent),
+    );
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.json({ accessToken });
+  }
+
+  @Post('/logout')
+  @HttpCode(204)
+  @UseGuards(RefreshTokenGuard)
+  async logoutUser(@Req() request: Request, @Res() res: Response) {
+    if (!request.user)
+      throw new UnauthorizedException('User info was not provided');
+
+    const { userId, deviceId } = request.user;
+
+    await this.commandBus.execute(
+      new LogoutUserUseCaseCommand(userId, deviceId),
+    );
+
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+    });
+
+    res.send();
   }
 }

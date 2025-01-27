@@ -422,4 +422,135 @@ describe('Auth testing', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(401);
   });
+
+  it('POST -> "/auth/refresh-token": should return 200 ', async () => {
+    const newUserDto = {
+      login: 'user',
+      password: 'password',
+      email: 'example@example.com',
+    };
+
+    const newUserBody = await createUser(
+      app,
+      newUserDto,
+      basicAuthUsername,
+      basicAuthPassword,
+    );
+    expect(newUserBody.status).toBe(201);
+
+    const loginUser = await request(httpServer)
+      .post(`/auth/login`)
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send({
+        loginOrEmail: newUserBody.body.login,
+        password: newUserDto.password,
+      })
+      .expect(200);
+
+    const cookie = loginUser.headers['set-cookie'];
+
+    const refreshToken = await request(httpServer)
+      .post('/auth/refresh-token')
+      .set('Cookie', cookie)
+      .send({})
+      .expect(200);
+
+    expect(refreshToken.body).toEqual({
+      accessToken: expect.any(String),
+    });
+  });
+
+  it('POST -> "/auth/refresh-token": should return 401 ', async () => {
+    const newUserDto = {
+      login: 'user',
+      password: 'password',
+      email: 'example@example.com',
+    };
+
+    const newUserBody = await createUser(
+      app,
+      newUserDto,
+      basicAuthUsername,
+      basicAuthPassword,
+    );
+    expect(newUserBody.status).toBe(201);
+
+    const loginUser = await request(httpServer)
+      .post(`/auth/login`)
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send({
+        loginOrEmail: newUserBody.body.login,
+        password: newUserDto.password,
+      })
+      .expect(200);
+
+    const cookie = '';
+
+    await request(httpServer)
+      .post('/auth/refresh-token')
+      .set('Cookie', cookie)
+      .send({})
+      .expect(401);
+  });
+
+  it('POST -> "/auth/logout": should status 204;', async () => {
+    const newUserDto = {
+      login: 'user',
+      password: 'password',
+      email: 'example@example.com',
+    };
+
+    const newUserBody = await createUser(
+      app,
+      newUserDto,
+      basicAuthUsername,
+      basicAuthPassword,
+    );
+    expect(newUserBody.status).toBe(201);
+
+    const loginUser = await request(httpServer)
+      .post(`/auth/login`)
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send({
+        loginOrEmail: newUserBody.body.login,
+        password: newUserDto.password,
+      })
+      .expect(200);
+    const cookie = loginUser.headers['set-cookie'];
+
+    await request(httpServer)
+      .post(`/auth/logout`)
+      .set('Cookie', cookie)
+      .expect(204);
+
+    const invalidLogoutAttempt = await request(httpServer)
+      .post(`/auth/logout`)
+      .set('Cookie', cookie)
+      .expect(401);
+  });
+
+  it('POST -> "/auth/logout": should status 401 not authorized;', async () => {
+    const cookie =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzA5MmVmZDkwMDM4N2NmNGFmODlkMmMiLCJkZXZpY2VJZCI6IjlmNjI2MGFjLWRmMzEtNDdiNi05YTBmLWJjNzFiNjRjMGJhOCIsInVzZXJJUCI6InRlc3R1c2VyaXAiLCJ1c2VyQWdlbnQiOiJ1c2VyLWFnZW50IiwiaWF0IjoxNzI4NjU1MTAxLCJleHAiOjE3Mjg2NTUxMjF9.bfaoQP6pSUgjtfmhQGU48h-QL2GWZjgsy6tpl8qjQS9';
+
+    const response = await request(httpServer)
+      .post(`/auth/logout`)
+      .set('Cookie', cookie)
+      .expect(401);
+
+    expect(response.body).toEqual({
+      error: 'Unauthorized',
+      message: 'No refresh token found',
+      statusCode: 401,
+    });
+  });
 });
