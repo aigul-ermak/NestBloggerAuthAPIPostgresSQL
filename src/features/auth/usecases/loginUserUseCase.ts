@@ -55,8 +55,6 @@ export class LoginUserUseCase
       command.loginDto.password,
     );
 
-    console.error('user before session', user);
-
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
