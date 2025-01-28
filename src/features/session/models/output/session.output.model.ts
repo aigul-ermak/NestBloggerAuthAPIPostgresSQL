@@ -14,7 +14,7 @@ export const SessionsOutputModelMapper = (
 
   outputModel.ip = session.ip;
   outputModel.title = session.title;
-  outputModel.lastActiveDate = session.iatDate.toISOString();
+  outputModel.lastActiveDate = session.iatDate?.toISOString();
   outputModel.deviceId = session.deviceId;
 
   return outputModel;
