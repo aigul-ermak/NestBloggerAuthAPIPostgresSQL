@@ -7,6 +7,7 @@ import { UsersQueryRepository } from '../../src/features/user/repositories/users
 import { createUser } from '../helpers/create-user.helper';
 import { testConfig } from '../setup';
 import { SessionQueryRepository } from '../../src/features/session/repositories/session-query.repository';
+import { SessionRepository } from '../../src/features/session/repositories/session.repository';
 
 const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
 const HTTP_BASIC_PASS = process.env.HTTP_BASIC_PASS as string;
@@ -26,6 +27,7 @@ describe('Security testing', () => {
   let httpServer;
   let usersQueryRepository;
   let sessionQueryRepository;
+  let sessionRepository;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -42,6 +44,8 @@ describe('Security testing', () => {
     sessionQueryRepository = moduleFixture.get<SessionQueryRepository>(
       SessionQueryRepository,
     );
+
+    sessionRepository = moduleFixture.get<SessionRepository>(SessionRepository);
 
     httpServer = app.getHttpServer();
   });
@@ -165,7 +169,52 @@ describe('Security testing', () => {
       .expect(204);
   });
 
-  it('DELETE -> "/security/devices/{deviceID}": should return 401 when if auth credentials are incorrect', async () => {
+  // it('DELETE -> "/security/devices/{deviceID}": should return 401 when if auth credentials are incorrect', async () => {
+  //   const userDto = {
+  //     login: 'user',
+  //     password: 'password',
+  //     email: 'example@example.com',
+  //   };
+  //
+  //   // Create a user
+  //   const newUserBody = await createUser(
+  //     app,
+  //     userDto,
+  //     basicAuthUsername,
+  //     basicAuthPassword,
+  //   );
+  //   expect(newUserBody.status).toBe(201);
+  //
+  //   // Login the user to create a session
+  //   const loginUser = await request(httpServer)
+  //     .post(`/auth/login`)
+  //     .set(
+  //       'Authorization',
+  //       getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+  //     )
+  //     .send({
+  //       loginOrEmail: newUserBody.body.login,
+  //       password: userDto.password,
+  //     })
+  //     .expect(200);
+  //
+  //   const cookie = loginUser.headers['set-cookie'];
+  //
+  //   const deviceId = '0b047ab0-9fa8-458e-8dfb-3363d1eafbf7';
+  //
+  //   const res = await request(httpServer)
+  //     .delete(`/security/devices/${deviceId}`)
+  //     .set('Cookie', cookie)
+  //     .expect(401);
+  //
+  //   expect(res.body).toEqual({
+  //     error: 'Unauthorized',
+  //     message: 'No refresh token found',
+  //     statusCode: 401,
+  //   });
+  // });
+
+  it('DELETE -> "/security/devices/": should return 401 when if auth credentials are incorrect', async () => {
     const userDto = {
       login: 'user',
       password: 'password',
