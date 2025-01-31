@@ -7,10 +7,12 @@ import { SecurityController } from './security.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DeleteDeviceSessionUseCase } from './usecases/deleteDeviceSessionUseCase';
+import { DeleteOtherSessionsUseCase } from './usecases/deleteOtherSessionsUseCase';
 
 const CommandHandlers = [
   GetAllDevicesWithActiveSessionsUseCase,
   DeleteDeviceSessionUseCase,
+  DeleteOtherSessionsUseCase,
 ];
 
 @Module({
