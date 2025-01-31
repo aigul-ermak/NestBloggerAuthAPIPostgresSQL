@@ -40,7 +40,7 @@ jobs:
 
       # Step 2: Install dependencies
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       # Step 3: Wait for PostgreSQL
       - name: Wait for PostgreSQL
