@@ -1,7 +1,9 @@
 import {
   Controller,
+  Delete,
   Get,
   HttpCode,
+  Param,
   Req,
   UnauthorizedException,
   UseGuards,
@@ -32,4 +34,22 @@ export class SecurityController {
 
     return activeSessions;
   }
+
+  @Delete('/devices/:id')
+  @HttpCode(204)
+  @UseGuards(RefreshTokenGuard)
+  async deleteDeviceSession(
+    @Req() request: Request,
+    @Param('id') deviceId: string,
+  ) {
+    return true;
+  }
+  //
+  // if (!request.user) throw new UnauthorizedException('User info was not provided');
+  //
+  // const {deviceId: tokenDeviceId, userId} = request.user
+  //
+  // return this.commandBus.execute(
+  //   new DeleteDeviceSessionUseCaseCommand(userId, deviceId)
+  // );
 }
