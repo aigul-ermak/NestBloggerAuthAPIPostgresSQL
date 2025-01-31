@@ -55,13 +55,10 @@ export class SessionQueryRepository {
     // return result.rows;
 
     return result.rows.map((row) => ({
-      id: row.id,
-      userId: row.user_id,
-      deviceId: row.device_id,
       ip: row.ip,
       title: row.title,
-      iatDate: row.iat_date,
-      expDate: row.exp_date,
+      lastActiveDate: row.iat_date,
+      deviceId: row.device_id,
     }));
   }
 
