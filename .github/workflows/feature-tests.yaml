@@ -36,11 +36,14 @@ jobs:
         run: corepack enable
 
       - name: Use Specific Yarn Version
-        run: corepack prepare yarn@4.4.0 --activate
+        run: |
+          corepack enable
+          corepack prepare yarn@4.4.0 --activate
+          yarn --version  # Debugging line
 
       # Step 2: Install dependencies
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       # Step 3: Wait for PostgreSQL
       - name: Wait for PostgreSQL

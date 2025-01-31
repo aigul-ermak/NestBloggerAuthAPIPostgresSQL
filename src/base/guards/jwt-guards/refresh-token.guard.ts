@@ -20,9 +20,12 @@ export class RefreshTokenGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    console.log('inside refresh token quard');
+
     const request = context.switchToHttp().getRequest<Request>();
 
     const refreshToken = request.cookies?.refreshToken;
+    console.log('refresh token', refreshToken);
 
     const refreshSecret = this.configService.get<string>(
       'jwtSettings.JWT_REFRESH_SECRET',
@@ -40,22 +43,17 @@ export class RefreshTokenGuard implements CanActivate {
       const { userId, userIP, deviceId, userAgent }: RefreshTokenType = decoded;
 
       const iatDate = new Date(decoded.iat * 1000);
-      console.log('iatDate', iatDate);
 
       const session: Session = await this.sessionQueryRepository.getUserSession(
         userId,
         deviceId,
       );
-      console.log('session', session);
 
       if (!session) {
         throw new UnauthorizedException(
           `Session not found: decoded: ${JSON.stringify(decoded)}`,
         );
       }
-
-      console.log('iat in guard', iatDate);
-      console.log('session iat in guard', session.iatDate);
 
       if (session.iatDate.getTime() !== iatDate.getTime()) {
         throw new UnauthorizedException(`Refresh token has become invalid'`);

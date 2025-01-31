@@ -47,14 +47,21 @@ export class SessionQueryRepository {
     return result[0] || null;
   }
 
-  // async getUserDevicesActiveSessions(userId: string): Promise<Session[]> {
-  //   return await this.pool.query(
-  //     `SELECT * FROM sessions
-  //      WHERE "userId" = $1`,
-  //     [userId],
-  //   );
-  // }
-  //
+  async getUserDevicesActiveSessions(userId: number) {
+    const query = `SELECT * FROM sessions WHERE "user_id" = $1`;
+    const result = await this.pool.query(query, [userId]);
+    console.log('result', result.rows);
+
+    // return result.rows;
+
+    return result.rows.map((row) => ({
+      ip: row.ip,
+      title: row.title,
+      lastActiveDate: row.iat_date,
+      deviceId: row.device_id,
+    }));
+  }
+
   // async getAllSession(): Promise<Session[]> {
   //   return await this.dataSource.query(`SELECT * FROM sessions`);
   // }

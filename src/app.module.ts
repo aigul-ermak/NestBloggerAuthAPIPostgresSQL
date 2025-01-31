@@ -11,6 +11,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { EmailModule } from './features/email/email.module';
 import { SessionModule } from './features/session/session.module';
 import { DatabaseModule } from './database.module';
+import { SecurityModule } from './features/security/security.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { DatabaseModule } from './database.module';
     AuthModule,
     EmailModule,
     SessionModule,
+    SecurityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
