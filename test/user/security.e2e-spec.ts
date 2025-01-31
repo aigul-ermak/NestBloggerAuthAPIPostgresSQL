@@ -79,28 +79,38 @@ describe('Security testing', () => {
 
     const user = await usersQueryRepository.findOneByEmail(userDto.email);
 
-    console.log('user for id ', user.id);
-
     const cookie = loginUser.headers['set-cookie'];
-    console.log('cookie', cookie);
 
     const response = await request(httpServer)
       .get(`/security/devices`)
       .set('Cookie', cookie)
       .send({})
       .expect(200);
-    console.log('response', response.body);
 
     expect(response.body).toEqual([
       expect.objectContaining({
-        id: expect.any(Number),
-        userId: expect.any(Number),
         deviceId: expect.any(String),
         ip: expect.any(String),
         title: expect.any(String),
-        createdAt: expect.any(String),
-        updatedAt: expect.any(String),
+        lastActiveDate: expect.any(String),
       }),
     ]);
+  });
+
+  it('GET -> "/security/devices": should return 401 unauthorized', async () => {
+    const cookie =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzA5MmVmZDkwMDM4N2NmNGFmODlkMmMiLCJkZXZpY2VJZCI6IjlmNjI2MGFjLWRmMzEtNDdiNi05YTBmLWJjNzFiNjRjMGJhOCIsInVzZXJJUCI6InRlc3R1c2VyaXAiLCJ1c2VyQWdlbnQiOiJ1c2VyLWFnZW50IiwiaWF0IjoxNzI4NjU1MTAxLCJleHAiOjE3Mjg2NTUxMjF9.bfaoQP6pSUgjtfmhQGU48h-QL2GWZjgsy6tpl8qjQS9';
+
+    const response = await request(httpServer)
+      .get(`/security/devices`)
+      .set('Cookie', cookie)
+      .send({})
+      .expect(401);
+
+    expect(response.body).toEqual({
+      error: 'Unauthorized',
+      message: 'No refresh token found',
+      statusCode: 401,
+    });
   });
 });
