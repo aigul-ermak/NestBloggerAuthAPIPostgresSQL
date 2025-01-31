@@ -34,7 +34,7 @@ export class GetAllDevicesWithActiveSessionsUseCase
       deviceId: session.deviceId,
       ip: session.ip,
       title: session.title,
-      lastActiveDate: session.iatDate.toISOString(),
+      lastActiveDate: session.lastActiveDate.toISOString(),
     }));
   }
 }
