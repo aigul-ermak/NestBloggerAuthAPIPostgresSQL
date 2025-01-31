@@ -6,8 +6,12 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { SecurityController } from './security.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { DeleteDeviceSessionUseCase } from './usecases/deleteDeviceSessionUseCase';
 
-const CommandHandlers = [GetAllDevicesWithActiveSessionsUseCase];
+const CommandHandlers = [
+  GetAllDevicesWithActiveSessionsUseCase,
+  DeleteDeviceSessionUseCase,
+];
 
 @Module({
   imports: [
