@@ -7,11 +7,12 @@ import configuration from './settings/configuration';
 import { TestingAllDataModule } from './features/testing-all-data/testing-all-data.module';
 import { PostModule } from './features/post/post.module';
 import { AuthModule } from './features/auth/auth.module';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { EmailModule } from './features/email/email.module';
 import { SessionModule } from './features/session/session.module';
 import { DatabaseModule } from './database.module';
 import { SecurityModule } from './features/security/security.module';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -35,6 +36,12 @@ import { SecurityModule } from './features/security/security.module';
     SecurityModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
