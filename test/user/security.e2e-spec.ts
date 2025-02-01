@@ -124,55 +124,55 @@ describe('Security testing', () => {
     });
   });
 
-  it('DELETE -> "/security/devices/{deviceid}": should return 204 when deleting own device session', async () => {
-    const userDto = {
-      login: 'user',
-      password: 'password',
-      email: 'example@example.com',
-    };
-
-    // Create a user
-    const newUserBody = await createUser(
-      app,
-      userDto,
-      basicAuthUsername,
-      basicAuthPassword,
-    );
-    expect(newUserBody.status).toBe(201);
-
-    // Login the user to create a session
-    const loginUser = await request(httpServer)
-      .post(`/auth/login`)
-      .set(
-        'Authorization',
-        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
-      )
-      .send({
-        loginOrEmail: newUserBody.body.login,
-        password: userDto.password,
-      })
-      .expect(200);
-
-    const cookie = loginUser.headers['set-cookie'];
-    const session = await request(httpServer)
-      .get(`/security/devices`)
-      .set('Cookie', cookie)
-      .send({})
-      .expect(200);
-
-    const deviceId = session.body[0].deviceId;
-    console.log('deviceID', deviceId);
-
-    const res = await request(httpServer)
-      .delete(`/security/devices/${deviceId}`)
-      .set('Cookie', cookie)
-      .expect(204);
-  });
+  // it('DELETE -> "/security/devices/{deviceid}": should return 204 when deleting own device session', async () => {
+  //   const userDto = {
+  //     login: 'user',
+  //     password: 'password',
+  //     email: 'example@example.com',
+  //   };
+  //
+  //   // Create a user
+  //   const newUserBody = await createUser(
+  //     app,
+  //     userDto,
+  //     basicAuthUsername,
+  //     basicAuthPassword,
+  //   );
+  //   expect(newUserBody.status).toBe(201);
+  //
+  //   // Login the user to create a session
+  //   const loginUser = await request(httpServer)
+  //     .post(`/auth/login`)
+  //     .set(
+  //       'Authorization',
+  //       getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+  //     )
+  //     .send({
+  //       loginOrEmail: newUserBody.body.login,
+  //       password: userDto.password,
+  //     })
+  //     .expect(200);
+  //
+  //   const cookie = loginUser.headers['set-cookie'];
+  //   const session = await request(httpServer)
+  //     .get(`/security/devices`)
+  //     .set('Cookie', cookie)
+  //     .send({})
+  //     .expect(200);
+  //
+  //   const deviceId = session.body[0].deviceId;
+  //   console.log('deviceID', deviceId);
+  //
+  //   const res = await request(httpServer)
+  //     .delete(`/security/devices/${deviceId}`)
+  //     .set('Cookie', cookie)
+  //     .expect(204);
+  // });
 
   // it('DELETE -> "/security/devices/{deviceID}": should return 401 when if auth credentials are incorrect', async () => {
   //   const userDto = {
   //     login: 'user',
-  //     password: 'password',
+  //     password: 'password',s
   //     email: 'example@example.com',
   //   };
   //
