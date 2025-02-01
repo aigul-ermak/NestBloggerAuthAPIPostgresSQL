@@ -9,6 +9,7 @@ import { HttpExceptionFilter } from '../base/exceptionFilters/http.exception.fil
 import { AppModule } from '../app.module';
 import { useContainer } from 'class-validator';
 import cookieParser from 'cookie-parser';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 // Префикс нашего приложения (http://site.com/api)
 const APP_PREFIX = '/api';
@@ -28,6 +29,7 @@ export const applyAppSettings = (app: INestApplication) => {
   // Применение глобальных pipes
   setAppPipes(app);
   app.use(cookieParser());
+  //app.useGlobalGuards(new ThrottlerGuard());
   //Применение глобальных exceptions filters
   //setAppExceptionsFilters(app);
 

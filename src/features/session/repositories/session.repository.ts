@@ -46,16 +46,15 @@ export class SessionRepository {
   }
 
   async deleteOtherSessions(
-    userId: string,
-    deviceId: string,
+    userId: number,
+    currentDeviceId: string,
   ): Promise<boolean> {
     const result = await this.pool.query(
       `DELETE FROM sessions
-       WHERE "userId" = $1 AND "deviceId" != $2`,
-      [userId, deviceId],
+     WHERE user_id = $1 AND device_id != $2`,
+      [userId, currentDeviceId],
     );
 
-    // return result.affectedRows > 0;
-    return true;
+    return result.rowCount > 0;
   }
 }

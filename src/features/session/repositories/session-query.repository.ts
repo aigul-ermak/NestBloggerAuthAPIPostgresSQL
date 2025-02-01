@@ -36,15 +36,29 @@ export class SessionQueryRepository {
     return session;
   }
 
-  async getUserSessionByDeviceId(deviceId: string): Promise<Session | null> {
+  async getUserSessionByDeviceId(
+    deviceId: string,
+  ): Promise<Partial<Session> | null> {
     const result = await this.pool.query(
       `SELECT * FROM sessions
-       WHERE "deviceId" = $1
+       WHERE "device_id" = $1
        LIMIT 1`,
       [deviceId],
     );
 
-    return result[0] || null;
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    const row = result.rows[0];
+
+    return {
+      userId: row.user_id,
+      ip: row.ip,
+      title: row.title,
+      iatDate: row.iat_date,
+      deviceId: row.device_id,
+    };
   }
 
   async getUserDevicesActiveSessions(userId: number) {

@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ThrottlerGuard } from '@nestjs/throttler';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { CreateUserRegistrationUseCaseCommand } from './usecases/createUserRegistrationUseCase';
 import { Request, Response } from 'express';
@@ -25,11 +25,12 @@ import { RefreshTokenGuard } from '../../base/guards/jwt-guards/refresh-token.gu
 import { RefreshTokensUseCaseCommand } from './usecases/refreshTokensUseCase';
 import { LogoutUserUseCaseCommand } from './usecases/logoutUserUseCase';
 
-@UseGuards(ThrottlerGuard)
+// @UseGuards(ThrottlerGuard)
 @Controller('auth')
 export class AuthController {
   constructor(private commandBus: CommandBus) {}
 
+  @Throttle({ default: { limit: 5, ttl: 10000 } })
   @Post('/login')
   @HttpCode(200)
   async login(
@@ -54,6 +55,7 @@ export class AuthController {
     return res.json({ accessToken });
   }
 
+  @Throttle({ default: { limit: 5, ttl: 10000 } })
   @Post('/registration')
   @HttpCode(204)
   async registration(@Body() createUserDto: CreateUserDto): Promise<void> {
@@ -62,6 +64,7 @@ export class AuthController {
     );
   }
 
+  @Throttle({ default: { limit: 5, ttl: 10000 } })
   @Post('/registration-email-resending')
   @HttpCode(204)
   async sendNewCodeToEmail(@Body() resendEmailDto: EmailDto): Promise<void> {
@@ -70,6 +73,7 @@ export class AuthController {
     );
   }
 
+  @Throttle({ default: { limit: 5, ttl: 10000 } })
   @Post('/registration-confirmation')
   @HttpCode(204)
   async confirmRegistration(@Body('code') code: string): Promise<void> {
