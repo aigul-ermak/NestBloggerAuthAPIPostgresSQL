@@ -39,23 +39,23 @@ export class SendNewCodeToEmailUseCase
       });
     }
 
-    if (user.confirmationCode !== null) {
-      throw new BadRequestException({
-        errorsMessages: [
-          {
-            message: 'Email already confirmed',
-            field: 'email',
-          },
-        ],
-      });
-    }
+    // if (user.confirmationCode !== null) {
+    //   throw new BadRequestException({
+    //     errorsMessages: [
+    //       {
+    //         message: 'Email already confirmed',
+    //         field: 'email',
+    //       },
+    //     ],
+    //   });
+    // }
 
     await this.usersRepository.updateUserCode(user.id, newCode);
 
     let userWithNewCode: User =
       await await this.usersQueryRepository.findOneByEmail(user.email);
 
-    await this.emailService.sendEmailMessage(userWithNewCode);
+    this.emailService.sendEmailMessage(userWithNewCode);
 
     return true;
   }
