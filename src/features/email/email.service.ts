@@ -13,11 +13,7 @@ export class EmailService {
       <p>To finish registration, please follow the link below:
         <a href="https://somesite.com/confirm-email?code=${code}">Complete registration</a>
       </p>`;
-    await this.emailAdapter.sendEmail(
-      user.email,
-      'Email Confirmation',
-      message,
-    );
+    this.emailAdapter.sendEmail(user.email, 'Email Confirmation', message);
   }
 
   async sendEmailMessage(user: User | null): Promise<void> {
@@ -31,11 +27,7 @@ export class EmailService {
       <p>To finish registration, please follow the link below:
         <a href="https://somesite.com/confirm-email?code=${code}">Complete registration</a>
       </p>`;
-    await this.emailAdapter.sendEmail(
-      user.email,
-      'Email Confirmation',
-      message,
-    );
+    this.emailAdapter.sendEmail(user.email, 'Email Confirmation', message);
   }
 
   async sendRecoveryCodeMessage(
