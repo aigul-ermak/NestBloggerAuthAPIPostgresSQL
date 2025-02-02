@@ -71,7 +71,7 @@ export class CreateUserRegistrationUseCase
     }
 
     try {
-      await this.emailService.sendEmailConfirmationMessage(newUser);
+      this.emailService.sendEmailConfirmationMessage(newUser);
     } catch (error) {
       console.error('Email sending failed:', error);
     }
