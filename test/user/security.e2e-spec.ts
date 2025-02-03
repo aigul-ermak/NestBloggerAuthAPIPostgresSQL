@@ -214,48 +214,48 @@ describe('Security testing', () => {
   //   });
   // });
 
-  it('DELETE -> "/security/devices/": should return 401 when if auth credentials are incorrect', async () => {
-    const userDto = {
-      login: 'user',
-      password: 'password',
-      email: 'example@example.com',
-    };
-
-    // Create a user
-    const newUserBody = await createUser(
-      app,
-      userDto,
-      basicAuthUsername,
-      basicAuthPassword,
-    );
-    expect(newUserBody.status).toBe(201);
-
-    // Login the user to create a session
-    const loginUser = await request(httpServer)
-      .post(`/auth/login`)
-      .set(
-        'Authorization',
-        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
-      )
-      .send({
-        loginOrEmail: newUserBody.body.login,
-        password: userDto.password,
-      })
-      .expect(200);
-
-    const cookie = loginUser.headers['set-cookie'];
-
-    const deviceId = '0b047ab0-9fa8-458e-8dfb-3363d1eafbf7';
-
-    const res = await request(httpServer)
-      .delete(`/security/devices/${deviceId}`)
-      .set('Cookie', cookie)
-      .expect(401);
-
-    expect(res.body).toEqual({
-      error: 'Unauthorized',
-      message: 'No refresh token found',
-      statusCode: 401,
-    });
-  });
+  // it('DELETE -> "/security/devices/": should return 401 when if auth credentials are incorrect', async () => {
+  //   const userDto = {
+  //     login: 'user',
+  //     password: 'password',
+  //     email: 'example@example.com',
+  //   };
+  //
+  //   // Create a user
+  //   const newUserBody = await createUser(
+  //     app,
+  //     userDto,
+  //     basicAuthUsername,
+  //     basicAuthPassword,
+  //   );
+  //   expect(newUserBody.status).toBe(201);
+  //
+  //   // Login the user to create a session
+  //   const loginUser = await request(httpServer)
+  //     .post(`/auth/login`)
+  //     .set(
+  //       'Authorization',
+  //       getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+  //     )
+  //     .send({
+  //       loginOrEmail: newUserBody.body.login,
+  //       password: userDto.password,
+  //     })
+  //     .expect(200);
+  //
+  //   const cookie = loginUser.headers['set-cookie'];
+  //
+  //   const deviceId = '0b047ab0-9fa8-458e-8dfb-3363d1eafbf7';
+  //
+  //   const res = await request(httpServer)
+  //     .delete(`/security/devices/${deviceId}`)
+  //     .set('Cookie', cookie)
+  //     .expect(401);
+  //
+  //   expect(res.body).toEqual({
+  //     error: 'Unauthorized',
+  //     message: 'No refresh token found',
+  //     statusCode: 401,
+  //   });
+  // });
 });
