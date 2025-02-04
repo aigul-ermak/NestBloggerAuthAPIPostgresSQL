@@ -1,42 +1,60 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
 } from '@nestjs/common';
-import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
+import { CommandBus } from '@nestjs/cqrs';
+import { BasicAuthGuard } from '../../base/guards/auth-guards/basic.auth.guard';
+import { CreateBlogUseCaseCommand } from './usecases/createBlogUseCase';
+import { GetBlogByIdUseCaseCommand } from './usecases/getBlogByIdUseCase';
 
 @Controller('sa/blogs')
 export class BlogController {
-  constructor(private readonly blogService: BlogService) {}
+  constructor(private commandBus: CommandBus) {}
 
   @Post()
-  create(@Body() createBlogDto: CreateBlogDto) {
-    return this.blogService.create(createBlogDto);
+  @UseGuards(BasicAuthGuard)
+  async create(@Body() createBlogDto: CreateBlogDto) {
+    const newBlogId = await this.commandBus.execute(
+      new CreateBlogUseCaseCommand(createBlogDto),
+    );
+
+    const blog = await this.commandBus.execute(
+      new GetBlogByIdUseCaseCommand(newBlogId),
+    );
+
+    if (!blog) {
+      throw new NotFoundException('Blog not found');
+    }
+
+    return blog;
   }
 
   @Get()
   findAll() {
-    return this.blogService.findAll();
+    return true;
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.blogService.findOne(+id);
+    return true;
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
-    return this.blogService.update(+id, updateBlogDto);
+    return true;
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.blogService.remove(+id);
+    return true;
   }
 }
