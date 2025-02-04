@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BlogsRepository } from '../repositories/blogs.repository';
-import { Blog } from '../entities/blog.entity';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 
 export class CreateBlogUseCaseCommand {
@@ -13,15 +12,15 @@ export class CreateBlogUseCase
 {
   constructor(private blogsRepository: BlogsRepository) {}
 
-  async execute(command: CreateBlogUseCaseCommand): Promise<Blog> {
+  async execute(command: CreateBlogUseCaseCommand): Promise<Number> {
     const { name, description, websiteUrl } = command.createBlogDto;
 
-    const createdBlog = await this.blogsRepository.createBlog(
+    const createdBlogId: Number = await this.blogsRepository.createBlog(
       name,
       description,
       websiteUrl,
     );
 
-    return createdBlog.id;
+    return createdBlogId;
   }
 }

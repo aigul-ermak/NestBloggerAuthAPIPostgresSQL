@@ -5,8 +5,9 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { DatabaseModule } from '../../database.module';
 import { BlogsRepository } from './repositories/blogs.repository';
 import { BlogsQueryRepository } from './repositories/blogs-query.repository';
+import { GetBlogByIdUseCase } from './usecases/getBlogByIdUseCase';
 
-const CommandHandlers = [CreateBlogUseCase];
+const CommandHandlers = [CreateBlogUseCase, GetBlogByIdUseCase];
 
 @Module({
   imports: [CqrsModule, DatabaseModule],
