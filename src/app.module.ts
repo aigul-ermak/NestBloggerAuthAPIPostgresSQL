@@ -13,6 +13,7 @@ import { SessionModule } from './features/session/session.module';
 import { DatabaseModule } from './database.module';
 import { SecurityModule } from './features/security/security.module';
 import { APP_GUARD } from '@nestjs/core';
+import { BlogModule } from './features/blog/blog.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { APP_GUARD } from '@nestjs/core';
     EmailModule,
     SessionModule,
     SecurityModule,
+    BlogModule,
   ],
   controllers: [AppController],
   providers: [
