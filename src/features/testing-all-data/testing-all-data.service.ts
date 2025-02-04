@@ -13,6 +13,8 @@ export class TestingAllDataService {
     try {
       await this.pool.query('TRUNCATE TABLE users CASCADE');
       await this.pool.query('TRUNCATE TABLE sessions CASCADE');
+      await this.pool.query('TRUNCATE TABLE blogs CASCADE');
+      await this.pool.query('TRUNCATE TABLE posts CASCADE');
       console.log('All data cleared successfully');
     } catch (error) {
       console.error('Error clearing data:', error);
