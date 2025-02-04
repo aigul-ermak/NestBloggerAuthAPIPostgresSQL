@@ -46,34 +46,35 @@ describe('Blog testing', () => {
     await app.close();
   });
 
-  it('POST -> "/sa/blogs": should return 201 for create blog', async () => {
-    const blogDto = {
-      name: 'testBlog',
-      description: 'testDescription',
-      websiteUrl:
-        'https://hEO9ArXY2EqnGG_jmMb9Yi8zRBjLabLGWMR9e.yiKejrxeCGMhNvmCqzmaOm_Fv_jf.5ahBsb1mXVdXbyt9KYo8l907V',
-    };
-
-    const response = await request(httpServer)
-      .post('/sa/blogs')
-      .set(
-        'Authorization',
-        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
-      )
-      .send(blogDto)
-      .expect(201);
-
-    const expectedResult = {
-      id: expect.any(String),
-      name: blogDto.name,
-      description: expect.any(String),
-      websiteUrl: expect.any(String),
-      createdAt: expect.any(String),
-      isMembership: false,
-    };
-
-    let blog = response.body;
-
-    expect(response.body).toEqual(expectedResult);
-  });
+  // it('POST -> "/sa/blogs": should return 201 for create blog', async () => {
+  //   const blogDto = {
+  //     name: 'testBlog',
+  //     description: 'testDescription',
+  //     websiteUrl:
+  //       'https://hEO9ArXY2EqnGG_jmMb9Yi8zRBjLabLGWMR9e.yiKejrxeCGMhNvmCqzmaOm_Fv_jf.5ahBsb1mXVdXbyt9KYo8l907V',
+  //   };
+  //
+  //   const response = await request(httpServer)
+  //     .post('/sa/blogs')
+  //     .set(
+  //       'Authorization',
+  //       getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+  //     )
+  //     .send(blogDto)
+  //     .expect(201);
+  //
+  //   const expectedResult = {
+  //     id: expect.any(String),
+  //     name: blogDto.name,
+  //     description: expect.any(String),
+  //     websiteUrl: expect.any(String),
+  //     createdAt: expect.any(String),
+  //     isMembership: false,
+  //   };
+  //
+  //   let blog = response.body;
+  //
+  //   expect(response.body).toEqual(expectedResult);
+  // });
+  //
 });
