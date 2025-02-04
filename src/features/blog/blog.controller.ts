@@ -15,6 +15,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { BasicAuthGuard } from '../../base/guards/auth-guards/basic.auth.guard';
 import { CreateBlogUseCaseCommand } from './usecases/createBlogUseCase';
 import { GetBlogByIdUseCaseCommand } from './usecases/getBlogByIdUseCase';
+import { BlogOutputModel } from './dto/blog-output.model';
 
 @Controller('sa/blogs')
 export class BlogController {
@@ -22,7 +23,7 @@ export class BlogController {
 
   @Post()
   @UseGuards(BasicAuthGuard)
-  async create(@Body() createBlogDto: CreateBlogDto) {
+  async create(@Body() createBlogDto: CreateBlogDto): Promise<BlogOutputModel> {
     const newBlogId = await this.commandBus.execute(
       new CreateBlogUseCaseCommand(createBlogDto),
     );
