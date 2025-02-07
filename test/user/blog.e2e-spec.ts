@@ -183,4 +183,157 @@ describe('Blog testing', () => {
       error: 'Not Found',
     });
   });
+
+  it('PUT -> "/sa/blogs": return 204 for update blog', async () => {
+    const blogDto = {
+      name: 'testBlog',
+      description: 'testDescription',
+      websiteUrl:
+        'https://hEO9ArXY2EqnGG_jmMb9Yi8zRBjLabLGWMR9e.yiKejrxeCGMhNvmCqzmaOm_Fv_jf.5ahBsb1mXVdXbyt9KYo8l907V',
+    };
+
+    const res = await request(httpServer)
+      .post('/sa/blogs')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(blogDto)
+      .expect(201);
+
+    const blogId = +res.body.id;
+    console.log('blogId', blogId);
+    const blogUpdateDto = {
+      name: 'testNewBlog',
+      description: 'testNewDescription',
+      websiteUrl:
+        'https://hEO9ArXY2EqnGG_jmMb9Yi8zRBjLabLGWMR9e.yiKejrxeCGMhNvmCqzmaOm_Fv_jf.5ahBsb1mXVdXbyt9KYo8l907V',
+    };
+
+    const response = await request(httpServer)
+      .put(`/sa/blogs/${blogId}`)
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(blogUpdateDto)
+      .expect(204);
+  });
+
+  it('PUT -> "/sa/blogs": return 400 for update blog', async () => {
+    const blogDto = {
+      name: 'testBlog',
+      description: 'testDescription',
+      websiteUrl:
+        'https://hEO9ArXY2EqnGG_jmMb9Yi8zRBjLabLGWMR9e.yiKejrxeCGMhNvmCqzmaOm_Fv_jf.5ahBsb1mXVdXbyt9KYo8l907V',
+    };
+
+    const res = await request(httpServer)
+      .post('/sa/blogs')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(blogDto)
+      .expect(201);
+
+    const blogId = +res.body.id;
+    console.log('blogId', blogId);
+    const blogUpdateDto = {
+      name: '',
+      description: '',
+      websiteUrl: '',
+    };
+
+    const response = await request(httpServer)
+      .put(`/sa/blogs/${blogId}`)
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(blogUpdateDto)
+      .expect(400);
+
+    const expectedResult = {
+      errorsMessages: [
+        {
+          message: 'Length not correct',
+          field: 'name',
+        },
+        {
+          message: 'Description not correct',
+          field: 'description',
+        },
+        {
+          message: 'Invalid URL format. The URL must start with https://',
+          field: 'websiteUrl',
+        },
+      ],
+    };
+
+    expect(response.body).toEqual(expectedResult);
+  });
+
+  it('PUT -> "/sa/blogs": return 401 for update blog', async () => {
+    const blogDto = {
+      name: 'testBlog',
+      description: 'testDescription',
+      websiteUrl:
+        'https://hEO9ArXY2EqnGG_jmMb9Yi8zRBjLabLGWMR9e.yiKejrxeCGMhNvmCqzmaOm_Fv_jf.5ahBsb1mXVdXbyt9KYo8l907V',
+    };
+
+    const res = await request(httpServer)
+      .post('/sa/blogs')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(blogDto)
+      .expect(201);
+
+    const blogId = +res.body.id;
+    console.log('blogId', blogId);
+    const blogUpdateDto = {
+      name: 'testNewBlog',
+      description: 'testNewDescription',
+      websiteUrl:
+        'https://hEO9ArXY2EqnGG_jmMb9Yi8zRBjLabLGWMR9e.yiKejrxeCGMhNvmCqzmaOm_Fv_jf.5ahBsb1mXVdXbyt9KYo8l907V',
+    };
+
+    const response = await request(httpServer)
+      .put(`/sa/blogs/${blogId}`)
+      .send(blogUpdateDto)
+      .expect(401);
+
+    expect(response.body).toEqual({
+      message: 'Unauthorized',
+      statusCode: 401,
+    });
+  });
+
+  it('PUT -> "/sa/blogs": return 404 for update blog', async () => {
+    const blogId = 100500;
+
+    const blogUpdateDto = {
+      name: 'testNewBlog',
+      description: 'testNewDescription',
+      websiteUrl:
+        'https://hEO9ArXY2EqnGG_jmMb9Yi8zRBjLabLGWMR9e.yiKejrxeCGMhNvmCqzmaOm_Fv_jf.5ahBsb1mXVdXbyt9KYo8l907V',
+    };
+
+    const response = await request(httpServer)
+      .put(`/sa/blogs/${blogId}`)
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(blogUpdateDto)
+      .expect(404);
+
+    expect(response.body).toEqual({
+      statusCode: 404,
+      message: 'Blog not found',
+      error: 'Not Found',
+    });
+  });
 });
