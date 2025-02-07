@@ -17,11 +17,11 @@ import { CreateBlogUseCaseCommand } from './usecases/createBlogUseCase';
 import { GetBlogByIdUseCaseCommand } from './usecases/getBlogByIdUseCase';
 import { BlogOutputModel } from './dto/blog-output.model';
 
-@Controller('sa/blogs')
+@Controller()
 export class BlogController {
   constructor(private commandBus: CommandBus) {}
 
-  @Post()
+  @Post('sa/blogs')
   @UseGuards(BasicAuthGuard)
   async create(@Body() createBlogDto: CreateBlogDto): Promise<BlogOutputModel> {
     const newBlogId = await this.commandBus.execute(
@@ -44,9 +44,9 @@ export class BlogController {
     return true;
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return true;
+  @Get('blogs/:id')
+  findOne(@Param('id') id: number) {
+    return this.commandBus.execute(new GetBlogByIdUseCaseCommand(id));
   }
 
   @Patch(':id')
