@@ -4,6 +4,7 @@ import { INestApplication } from '@nestjs/common';
 import { applyAppSettings } from '../../src/settings/apply.app.setting';
 import request from 'supertest';
 import { testConfig } from '../setup';
+import { BlogsQueryRepository } from '../../src/features/blog/repositories/blogs-query.repository';
 
 const HTTP_BASIC_USER = process.env.HTTP_BASIC_USER as string;
 const HTTP_BASIC_PASS = process.env.HTTP_BASIC_PASS as string;
@@ -32,8 +33,8 @@ describe('Blog testing', () => {
     applyAppSettings(app);
     await app.init();
 
-    // blogsQueryRepository =
-    //   moduleFixture.get<UsersQueryRepository>(UsersQueryRepository);
+    blogsQueryRepository =
+      moduleFixture.get<BlogsQueryRepository>(BlogsQueryRepository);
 
     httpServer = app.getHttpServer();
   });
@@ -75,5 +76,111 @@ describe('Blog testing', () => {
     let blog = response.body;
 
     expect(response.body).toEqual(expectedResult);
+  });
+
+  it('POST -> "/sa/blogs": should return 400 for invalid blog fields', async () => {
+    const blogDto = {
+      name: '',
+      description: '',
+      websiteUrl: '',
+    };
+
+    const response = await request(httpServer)
+      .post('/sa/blogs')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(blogDto)
+      .expect(400);
+
+    const expectedResult = {
+      errorsMessages: [
+        {
+          message: 'Length not correct',
+          field: 'name',
+        },
+        {
+          message: 'Description not correct',
+          field: 'description',
+        },
+        {
+          message: 'Invalid URL format. The URL must start with https://',
+          field: 'websiteUrl',
+        },
+      ],
+    };
+
+    expect(response.body).toEqual(expectedResult);
+  });
+
+  it('POST -> "/sa/blogs": should return 401 for Unauthorized', async () => {
+    const blogDto = {
+      name: 'testBlog',
+      description: 'testDescription',
+      websiteUrl:
+        'https://hEO9ArXY2EqnGG_jmMb9Yi8zRBjLabLGWMR9e.yiKejrxeCGMhNvmCqzmaOm_Fv_jf.5ahBsb1mXVdXbyt9KYo8l907V',
+    };
+
+    const response = await request(httpServer)
+      .post('/sa/blogs')
+      .send(blogDto)
+      .expect(401);
+
+    expect(response.body).toEqual({
+      message: 'Unauthorized',
+      statusCode: 401,
+    });
+  });
+
+  it('GET -> "/sa/blogs": return 200 for get blog', async () => {
+    const blogDto = {
+      name: 'testBlog',
+      description: 'testDescription',
+      websiteUrl:
+        'https://hEO9ArXY2EqnGG_jmMb9Yi8zRBjLabLGWMR9e.yiKejrxeCGMhNvmCqzmaOm_Fv_jf.5ahBsb1mXVdXbyt9KYo8l907V',
+    };
+
+    const res = await request(httpServer)
+      .post('/sa/blogs')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(blogDto)
+      .expect(201);
+
+    const blogId = +res.body.id;
+
+    console.log('blogID', blogId);
+
+    const response = await request(httpServer)
+      .get(`/blogs/${blogId}`)
+      .expect(200);
+
+    const expectedResult = {
+      id: expect.any(String),
+      name: blogDto.name,
+      description: expect.any(String),
+      websiteUrl: expect.any(String),
+      createdAt: expect.any(String),
+      isMembership: false,
+    };
+
+    expect(response.body).toEqual(expectedResult);
+  });
+
+  it('GET -> "/sa/blogs": returns 404 for not found blog', async () => {
+    const blogId = 105258;
+
+    const response = await request(httpServer)
+      .get(`/blogs/${blogId}`)
+      .expect(404);
+
+    expect(response.body).toEqual({
+      statusCode: 404,
+      message: 'Blog not found',
+      error: 'Not Found',
+    });
   });
 });
