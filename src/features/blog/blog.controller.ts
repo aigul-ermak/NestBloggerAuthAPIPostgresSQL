@@ -3,10 +3,11 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   NotFoundException,
   Param,
-  Patch,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -16,6 +17,7 @@ import { BasicAuthGuard } from '../../base/guards/auth-guards/basic.auth.guard';
 import { CreateBlogUseCaseCommand } from './usecases/createBlogUseCase';
 import { GetBlogByIdUseCaseCommand } from './usecases/getBlogByIdUseCase';
 import { BlogOutputModel } from './dto/blog-output.model';
+import { UpdateBlogUseCaseCommand } from './usecases/updateBlogUseCase';
 
 @Controller()
 export class BlogController {
@@ -49,9 +51,13 @@ export class BlogController {
     return this.commandBus.execute(new GetBlogByIdUseCaseCommand(id));
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
-    return true;
+  @Put('sa/blogs/:id')
+  @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
+  update(@Param('id') id: number, @Body() updateBlogDto: UpdateBlogDto) {
+    return this.commandBus.execute(
+      new UpdateBlogUseCaseCommand(id, updateBlogDto),
+    );
   }
 
   @Delete(':id')
