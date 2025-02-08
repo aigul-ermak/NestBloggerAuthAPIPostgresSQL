@@ -9,6 +9,7 @@ import { GetBlogByIdUseCase } from './usecases/getBlogByIdUseCase';
 import { UpdateBlogUseCase } from './usecases/updateBlogUseCase';
 import { DeleteBlogByIdUseCase } from './usecases/deleteBlogByIdUseCase';
 import { GetAllBlogsUseCase } from './usecases/getAllBlogsUseCase';
+import { BlogSuperAdminController } from './blog-super-admin.controller';
 
 const CommandHandlers = [
   CreateBlogUseCase,
@@ -20,7 +21,7 @@ const CommandHandlers = [
 
 @Module({
   imports: [CqrsModule, DatabaseModule],
-  controllers: [BlogController],
+  controllers: [BlogController, BlogSuperAdminController],
   providers: [...CommandHandlers, BlogsRepository, BlogsQueryRepository],
   exports: [BlogsRepository, BlogsQueryRepository],
 })
