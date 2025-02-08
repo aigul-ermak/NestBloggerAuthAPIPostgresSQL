@@ -469,7 +469,14 @@ describe('Blog testing', () => {
       .send(blogDto2)
       .expect(201);
 
-    const response = await request(httpServer).get('/sa/blogs').expect(200);
+    const response = await request(httpServer)
+      .get('/sa/blogs')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .expect(200);
+
     console.log(response.body);
     const expectedResponse = {
       pagesCount: 1,
