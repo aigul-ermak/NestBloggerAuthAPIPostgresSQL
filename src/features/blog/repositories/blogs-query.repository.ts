@@ -32,17 +32,22 @@ export class BlogsQueryRepository {
       index++;
     }
 
+    const sortableTextColumns = ['name', 'description'];
+    const orderByClause = sortableTextColumns.includes(sortBy)
+      ? `${sortBy} COLLATE "C"`
+      : sortBy;
+
     const query = `
-      SELECT * FROM blogs
-      ${whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : ''}
-      ORDER BY ${sortBy} ${sortDirection}
-      LIMIT $${index} OFFSET $${index + 1};
+    SELECT * FROM blogs
+    ${whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : ''}
+    ORDER BY ${orderByClause} ${sortDirection} 
+    LIMIT $${index} OFFSET $${index + 1};
     `;
 
     values.push(limit, skip);
 
     const result = await this.pool.query(query, values);
-    return result.rows.map(BlogOutputModelMapper);
+    return result.rows;
   }
 
   async countDocuments(filter: Partial<{ name: string }>): Promise<number> {
@@ -51,8 +56,8 @@ export class BlogsQueryRepository {
     let index = 1;
 
     if (filter.name) {
-      whereConditions.push(`name ILIKE $${index}`);
-      values.push(`%${filter.name}%`);
+      whereConditions.push(`LOWER(name) ILIKE $${index}`);
+      values.push(`%${filter.name.toLowerCase()}%`);
       index++;
     }
 
