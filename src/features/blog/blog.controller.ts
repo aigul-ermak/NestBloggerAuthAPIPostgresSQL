@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -19,6 +20,8 @@ import { GetBlogByIdUseCaseCommand } from './usecases/getBlogByIdUseCase';
 import { BlogOutputModel } from './dto/blog-output.model';
 import { UpdateBlogUseCaseCommand } from './usecases/updateBlogUseCase';
 import { DeleteBlogByIdUseCaseCommand } from './usecases/deleteBlogByIdUseCase';
+import { SortBlogsDto } from './dto/sort-blog.input.dto';
+import { GetAllBlogsUseCaseCommand } from './usecases/getAllBlogsUseCase';
 
 @Controller()
 export class BlogController {
@@ -42,9 +45,9 @@ export class BlogController {
     return blog;
   }
 
-  @Get()
-  findAll() {
-    return true;
+  @Get('sa/blogs/')
+  findAll(@Query() sortData: SortBlogsDto) {
+    return this.commandBus.execute(new GetAllBlogsUseCaseCommand(sortData));
   }
 
   @Get('blogs/:id')

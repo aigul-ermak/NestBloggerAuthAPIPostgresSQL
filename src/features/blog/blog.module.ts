@@ -8,12 +8,14 @@ import { BlogsQueryRepository } from './repositories/blogs-query.repository';
 import { GetBlogByIdUseCase } from './usecases/getBlogByIdUseCase';
 import { UpdateBlogUseCase } from './usecases/updateBlogUseCase';
 import { DeleteBlogByIdUseCase } from './usecases/deleteBlogByIdUseCase';
+import { GetAllBlogsUseCase } from './usecases/getAllBlogsUseCase';
 
 const CommandHandlers = [
   CreateBlogUseCase,
   GetBlogByIdUseCase,
   UpdateBlogUseCase,
   DeleteBlogByIdUseCase,
+  GetAllBlogsUseCase,
 ];
 
 @Module({
