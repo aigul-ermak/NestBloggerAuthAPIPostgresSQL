@@ -42,8 +42,8 @@ export class GetAllBlogsUseCase
     console.log('blogs usecase', blogs);
     return {
       pagesCount: pageCount,
-      page: pageNumber,
-      pageSize: pageSize,
+      page: +pageNumber,
+      pageSize: +pageSize,
       totalCount: totalCount,
       items: blogs.map(BlogOutputModelMapper),
     };
