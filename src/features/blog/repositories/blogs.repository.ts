@@ -42,4 +42,12 @@ export class BlogsRepository {
 
     return result.rowCount > 0;
   }
+
+  async deleteById(id: number): Promise<boolean> {
+    const query = `
+      DELETE FROM blogs WHERE id = $1;
+    `;
+    const result = await this.pool.query(query, [id]);
+    return result.rowCount > 0;
+  }
 }

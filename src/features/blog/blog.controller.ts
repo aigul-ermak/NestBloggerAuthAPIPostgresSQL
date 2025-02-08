@@ -18,6 +18,7 @@ import { CreateBlogUseCaseCommand } from './usecases/createBlogUseCase';
 import { GetBlogByIdUseCaseCommand } from './usecases/getBlogByIdUseCase';
 import { BlogOutputModel } from './dto/blog-output.model';
 import { UpdateBlogUseCaseCommand } from './usecases/updateBlogUseCase';
+import { DeleteBlogByIdUseCaseCommand } from './usecases/deleteBlogByIdUseCase';
 
 @Controller()
 export class BlogController {
@@ -60,8 +61,10 @@ export class BlogController {
     );
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return true;
+  @Delete('sa/blogs/:id')
+  @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
+  remove(@Param('id') id: number) {
+    return this.commandBus.execute(new DeleteBlogByIdUseCaseCommand(id));
   }
 }
