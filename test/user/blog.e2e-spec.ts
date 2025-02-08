@@ -435,4 +435,67 @@ describe('Blog testing', () => {
       error: 'Not Found',
     });
   });
+
+  it('GET -> "/sa/blogs": returns 200 for get all blogs', async () => {
+    const blogDto1 = {
+      name: 'testBlog1',
+      description: 'testDescription1',
+      websiteUrl:
+        'https://hEO9ArXY2EqnGG_jmMb9Yi8zRBjLabLGWMR9e.yiKejrxeCGMhNvmCqzmaOm_Fv_jf.5ahBsb1mXVdXbyt9KYo8l907V',
+    };
+
+    await request(httpServer)
+      .post('/sa/blogs')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(blogDto1)
+      .expect(201);
+
+    const blogDto2 = {
+      name: 'testBlog2',
+      description: 'testDescription2',
+      websiteUrl:
+        'https://hEO9ArXY2EqnGG_jmMb9Yi8zRBjLabLGWMR9e.yiKejrxeCGMhNvmCqzmaOm_Fv_jf.5ahBsb1mXVdXbyt9KYo8l907V',
+    };
+
+    await request(httpServer)
+      .post('/sa/blogs')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(blogDto2)
+      .expect(201);
+
+    const response = await request(httpServer).get('/sa/blogs').expect(200);
+    console.log(response.body);
+    const expectedResponse = {
+      pagesCount: 1,
+      page: 1,
+      pageSize: 10,
+      totalCount: 2,
+      items: [
+        {
+          id: expect.any(String),
+          name: expect.any(String),
+          description: expect.any(String),
+          websiteUrl: expect.any(String),
+          createdAt: expect.any(String),
+          isMembership: false,
+        },
+        {
+          id: expect.any(String),
+          name: expect.any(String),
+          description: expect.any(String),
+          websiteUrl: expect.any(String),
+          createdAt: expect.any(String),
+          isMembership: false,
+        },
+      ],
+    };
+
+    expect(response.body).toEqual(expectedResponse);
+  });
 });
