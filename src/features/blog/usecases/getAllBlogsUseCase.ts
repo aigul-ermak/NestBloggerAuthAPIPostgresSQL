@@ -39,7 +39,7 @@ export class GetAllBlogsUseCase
     const totalCount: number =
       await this.blogsQueryRepository.countDocuments(filter);
     const pageCount: number = Math.ceil(totalCount / pageSize);
-    console.log('blogs usecase', blogs);
+
     return {
       pagesCount: pageCount,
       page: +pageNumber,

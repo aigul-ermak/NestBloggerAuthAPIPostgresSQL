@@ -265,7 +265,7 @@ describe('Blog testing', () => {
           field: 'description',
         },
         {
-          message: 'Invalid URL format. The URL must start with https://',
+          message: 'Url not correct',
           field: 'websiteUrl',
         },
       ],

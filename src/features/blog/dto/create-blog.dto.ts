@@ -16,7 +16,7 @@ export class CreateBlogDto {
   @Matches(
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/,
     {
-      message: 'Invalid URL format. The URL must start with https://',
+      message: 'Url not correct',
     },
   )
   websiteUrl: string;
