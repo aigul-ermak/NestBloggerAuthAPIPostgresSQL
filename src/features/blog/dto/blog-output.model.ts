@@ -14,6 +14,6 @@ export const BlogOutputModelMapper = (blog): BlogOutputModel => {
     description: blog.description,
     websiteUrl: blog.website_url,
     createdAt: blog.created_at,
-    isMembership: blog.is_membership ?? false,
+    isMembership: false,
   };
 };
