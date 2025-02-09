@@ -10,8 +10,6 @@ import {
   Put,
   Query,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
@@ -24,6 +22,9 @@ import { UpdateBlogUseCaseCommand } from './usecases/updateBlogUseCase';
 import { DeleteBlogByIdUseCaseCommand } from './usecases/deleteBlogByIdUseCase';
 import { SortBlogsDto } from './dto/sort-blog.input.dto';
 import { GetAllBlogsUseCaseCommand } from './usecases/getAllBlogsUseCase';
+import { CreatePostToBlogDto } from './dto/create-post-blog.dto';
+import { PostToBlogInputType } from './dto/types/postToBlogInputType';
+import { CreatePostUseCaseCommand } from '../post/usecases/createPostUseCase';
 
 @Controller('sa/blogs')
 export class BlogSuperAdminController {
@@ -71,5 +72,22 @@ export class BlogSuperAdminController {
   @UseGuards(BasicAuthGuard)
   remove(@Param('id') id: number): Promise<boolean> {
     return this.commandBus.execute(new DeleteBlogByIdUseCaseCommand(id));
+  }
+
+  @Post(':id/posts')
+  @UseGuards(BasicAuthGuard)
+  async createPostForBlog(
+    @Param('id') blogId: number,
+    @Body()
+    createPostToBlogDto: CreatePostToBlogDto,
+  ) {
+    const createdPost: PostToBlogInputType = {
+      ...createPostToBlogDto,
+      blogId,
+    };
+
+    return await this.commandBus.execute(
+      new CreatePostUseCaseCommand(createdPost),
+    );
   }
 }
