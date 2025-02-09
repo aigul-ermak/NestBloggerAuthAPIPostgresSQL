@@ -1,8 +1,7 @@
 import { IsString, Length } from 'class-validator';
 import { Trim } from '../../../base/decorators/transform/trim';
-import { IsValidBlogId } from '../../../base/decorators/validation/isValidBlogId.decorator';
 
-export class CreatePostDto {
+export class CreatePostToBlogDto {
   @IsString()
   @Trim()
   @Length(1, 30, { message: 'Length not correct' })
@@ -17,8 +16,4 @@ export class CreatePostDto {
   @Trim()
   @Length(1, 1000, { message: 'Content not correct' })
   content: string;
-
-  @IsString({ message: 'It should be a string' })
-  @IsValidBlogId()
-  blogId: number;
 }

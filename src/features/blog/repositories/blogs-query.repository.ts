@@ -1,7 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Pool } from 'pg';
-import { BlogOutputModelMapper } from '../dto/blog-output.model';
-import { Blog } from '../entities/blog.entity';
 
 @Injectable()
 export class BlogsQueryRepository {
