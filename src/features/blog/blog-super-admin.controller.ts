@@ -10,6 +10,8 @@ import {
   Put,
   Query,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
@@ -51,15 +53,14 @@ export class BlogSuperAdminController {
     return this.commandBus.execute(new GetAllBlogsUseCaseCommand(sortData));
   }
 
-  // @Get('blogs/:id')
-  // findOne(@Param('id') id: number) {
-  //   return this.commandBus.execute(new GetBlogByIdUseCaseCommand(id));
-  // }
-
   @Put(':id')
   @HttpCode(204)
   @UseGuards(BasicAuthGuard)
-  update(@Param('id') id: number, @Body() updateBlogDto: UpdateBlogDto) {
+  update(
+    @Param('id') id: number,
+    @Body() updateBlogDto: UpdateBlogDto,
+  ): Promise<boolean> {
+    console.log(updateBlogDto);
     return this.commandBus.execute(
       new UpdateBlogUseCaseCommand(id, updateBlogDto),
     );
@@ -68,7 +69,7 @@ export class BlogSuperAdminController {
   @Delete(':id')
   @HttpCode(204)
   @UseGuards(BasicAuthGuard)
-  remove(@Param('id') id: number) {
+  remove(@Param('id') id: number): Promise<boolean> {
     return this.commandBus.execute(new DeleteBlogByIdUseCaseCommand(id));
   }
 }
