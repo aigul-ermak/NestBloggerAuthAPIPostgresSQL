@@ -20,7 +20,7 @@ export class UpdateBlogUseCase
     private blogsQueryRepository: BlogsQueryRepository,
   ) {}
 
-  async execute(command: UpdateBlogUseCaseCommand): Promise<Number> {
+  async execute(command: UpdateBlogUseCaseCommand): Promise<boolean> {
     const blog = await this.blogsQueryRepository.getBlogById(command.blogId);
 
     if (!blog) {
@@ -37,6 +37,6 @@ export class UpdateBlogUseCase
       );
     }
 
-    return 1;
+    return true;
   }
 }
