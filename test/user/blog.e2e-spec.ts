@@ -152,8 +152,6 @@ describe('Blog testing', () => {
 
     const blogId = +res.body.id;
 
-    console.log('blogID', blogId);
-
     const response = await request(httpServer)
       .get(`/blogs/${blogId}`)
       .expect(200);
@@ -202,7 +200,7 @@ describe('Blog testing', () => {
       .expect(201);
 
     const blogId = +res.body.id;
-    console.log('blogId', blogId);
+
     const blogUpdateDto = {
       name: 'testNewBlog',
       description: 'testNewDescription',
@@ -238,7 +236,7 @@ describe('Blog testing', () => {
       .expect(201);
 
     const blogId = +res.body.id;
-    console.log('blogId', blogId);
+
     const blogUpdateDto = {
       name: '',
       description: '',
@@ -292,7 +290,7 @@ describe('Blog testing', () => {
       .expect(201);
 
     const blogId = +res.body.id;
-    console.log('blogId', blogId);
+
     const blogUpdateDto = {
       name: 'testNewBlog',
       description: 'testNewDescription',
@@ -355,7 +353,7 @@ describe('Blog testing', () => {
       .expect(201);
 
     const blogId = +res.body.id;
-    console.log('blogId', blogId);
+
     const blogUpdateDto = {
       name: 'testNewBlog',
       description: 'testNewDescription',
@@ -391,7 +389,7 @@ describe('Blog testing', () => {
       .expect(201);
 
     const blogId = +res.body.id;
-    console.log('blogId', blogId);
+
     const blogUpdateDto = {
       name: 'testNewBlog',
       description: 'testNewDescription',
@@ -477,7 +475,6 @@ describe('Blog testing', () => {
       )
       .expect(200);
 
-    console.log(response.body);
     const expectedResponse = {
       pagesCount: 1,
       page: 1,
@@ -504,5 +501,64 @@ describe('Blog testing', () => {
     };
 
     expect(response.body).toEqual(expectedResponse);
+  });
+
+  it('POST -> "/sa/blogs":return 201 for create post for blog', async () => {
+    const blogDto = {
+      name: 'testBlog',
+      description: 'testDescription',
+      websiteUrl:
+        'https://hEO9ArXY2EqnGG_jmMb9Yi8zRBjLabLGWMR9e.yiKejrxeCGMhNvmCqzmaOm_Fv_jf.5ahBsb1mXVdXbyt9KYo8l907V',
+    };
+
+    const res = await request(httpServer)
+      .post('/sa/blogs')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(blogDto)
+      .expect(201);
+
+    const blogId = +res.body.id;
+
+    const postDto = {
+      title: 'testPost',
+      shortDescription: 'testShortDescription',
+      content: 'testContent',
+    };
+
+    const createdPost = {
+      ...postDto,
+      blogId,
+    };
+
+    const response = await request(httpServer)
+      .post(`/sa/blogs/${blogId}/posts`)
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(createdPost)
+      .expect(201);
+
+    const expectedResult = {
+      id: expect.any(Number),
+      title: postDto.title,
+      shortDescription: expect.any(String),
+      content: expect.any(String),
+      blogId: blogId,
+      blogName: expect.any(String),
+      createdAt: expect.any(String),
+      extendedLikesInfo: {
+        likesCount: expect.any(Number),
+        dislikesCount: expect.any(Number),
+        myStatus: 'None',
+        newestLikes: [],
+      },
+    };
+
+    const post = response.body;
+    expect(response.body).toEqual(expectedResult);
   });
 });
