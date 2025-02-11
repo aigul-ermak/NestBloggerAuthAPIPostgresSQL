@@ -543,11 +543,11 @@ describe('Blog testing', () => {
       .expect(201);
 
     const expectedResult = {
-      id: expect.any(Number),
+      id: expect.any(String),
       title: postDto.title,
       shortDescription: expect.any(String),
       content: expect.any(String),
-      blogId: blogId,
+      blogId: expect.any(String),
       blogName: expect.any(String),
       createdAt: expect.any(String),
       extendedLikesInfo: {
@@ -559,6 +559,77 @@ describe('Blog testing', () => {
     };
 
     const post = response.body;
+    expect(response.body).toEqual(expectedResult);
+  });
+
+  it('GET -> "/sa/blogs": return 200 for get posts for blog', async () => {
+    const blogDto = {
+      name: 'testBlog',
+      description: 'testDescription',
+      websiteUrl:
+        'https://hEO9ArXY2EqnGG_jmMb9Yi8zRBjLabLGWMR9e.yiKejrxeCGMhNvmCqzmaOm_Fv_jf.5ahBsb1mXVdXbyt9KYo8l907V',
+    };
+
+    const res = await request(httpServer)
+      .post('/sa/blogs')
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(blogDto)
+      .expect(201);
+
+    const blogId = +res.body.id;
+
+    const postDto = {
+      title: 'testPost',
+      shortDescription: 'testShortDescription',
+      content: 'testContent',
+    };
+
+    const createdPost = {
+      ...postDto,
+      blogId,
+    };
+
+    await request(httpServer)
+      .post(`/sa/blogs/${blogId}/posts`)
+      .set(
+        'Authorization',
+        getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS),
+      )
+      .send(createdPost)
+      .expect(201);
+
+    const response = await request(httpServer)
+      .get(`/blogs/${blogId}/posts`)
+      //.set('Authorization', getBasicAuthHeader(HTTP_BASIC_USER, HTTP_BASIC_PASS))
+      .expect(200);
+
+    const expectedResult = {
+      pagesCount: 1,
+      page: 1,
+      pageSize: 10,
+      totalCount: 1,
+      items: [
+        {
+          id: expect.any(String),
+          title: expect.any(String),
+          shortDescription: expect.any(String),
+          content: expect.any(String),
+          blogId: expect.any(String),
+          blogName: expect.any(String),
+          createdAt: expect.any(String),
+          extendedLikesInfo: {
+            likesCount: 0,
+            dislikesCount: 0,
+            myStatus: 'None',
+            newestLikes: [],
+          },
+        },
+      ],
+    };
+
     expect(response.body).toEqual(expectedResult);
   });
 });
