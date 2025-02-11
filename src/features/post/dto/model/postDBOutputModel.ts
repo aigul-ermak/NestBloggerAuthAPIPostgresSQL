@@ -53,15 +53,15 @@ export const PostLikeOutputModelMapper = (
 
 export const mapPostToResponse = (post: any, blogName: string) => {
   return {
-    id: +post.id,
+    id: post.id.toString(),
     title: post.title,
-    shortDescription: post.short_description, // Fixed typo (_short_descriptionn_)
+    shortDescription: post.short_description,
     content: post.content,
-    blogId: +post.blog_id,
+    blogId: post.blog_id.toString(),
     blogName,
     createdAt: post.created_at,
     extendedLikesInfo: {
-      likesCount: post.likes_count, // Fixed naming to match returned object
+      likesCount: post.likes_count,
       dislikesCount: post.dislikes_count,
       myStatus: post.my_status ?? 'None',
       newestLikes: [],
