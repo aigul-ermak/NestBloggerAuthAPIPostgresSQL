@@ -20,7 +20,6 @@ export class PostOutputModel {
 
 export const PostLikeOutputModelMapper = (
   post: any,
-  blogName: string,
   newestLikes: any[],
   status: LIKE_STATUS,
 ) => {
@@ -31,7 +30,7 @@ export const PostLikeOutputModelMapper = (
     content: post.content,
     blogId: post.blog_id.toString(),
     createdAt: post.created_at,
-    blogName: blogName,
+    blogName: post.blogName,
     extendedLikesInfo: {
       likesCount: post.likes_count,
       dislikesCount: post.dislikes_count,

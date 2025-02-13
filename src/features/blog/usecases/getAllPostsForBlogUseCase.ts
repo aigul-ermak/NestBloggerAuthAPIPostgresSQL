@@ -35,8 +35,6 @@ export class GetAllPostsForBlogUseCase
 
     const blog = await this.blogsQueryRepository.getBlogById(command.blogId);
 
-    const blogName = blog.name;
-
     if (!blog) {
       throw new NotFoundException('Blog not found');
     }
@@ -56,12 +54,13 @@ export class GetAllPostsForBlogUseCase
       (page - 1) * size,
       size,
     );
-    console.log('posts', posts);
+    console.log('posts from requests', posts);
+
     const mappedPosts = await Promise.all(
       posts.map(async (post) => {
         let status: LIKE_STATUS = LIKE_STATUS.NONE;
         const newestLikes = [];
-        return PostLikeOutputModelMapper(post, blogName, newestLikes, status);
+        return PostLikeOutputModelMapper(post, newestLikes, status);
       }),
     );
     console.log('mappedPosts', mappedPosts);
