@@ -7,11 +7,31 @@ import { PostsQueryRepository } from './repositiories/posts-query.repository';
 import { CreatePostUseCase } from './usecases/createPostUseCase';
 import { BlogsQueryRepository } from '../blog/repositories/blogs-query.repository';
 import { PostService } from './post.service';
+import { GetPostByIdUseCase } from './usecases/getPostByIdUseCase';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
-const CommandHandlers = [CreatePostUseCase];
+const CommandHandlers = [CreatePostUseCase, GetPostByIdUseCase];
 
 @Module({
-  imports: [CqrsModule, DatabaseModule],
+  imports: [
+    CqrsModule,
+    DatabaseModule,
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          secret: configService.get<string>('jwtSettings.JWT_ACCESS_SECRET'),
+
+          signOptions: {
+            expiresIn: configService.get<string>(
+              'jwtSettings.ACCESS_TOKEN_EXPIRY',
+            ),
+          },
+        };
+      },
+    }),
+  ],
   controllers: [PostController],
   providers: [
     ...CommandHandlers,
