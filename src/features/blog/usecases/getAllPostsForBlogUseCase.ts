@@ -1,6 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogsRepository } from '../repositories/blogs.repository';
-import { CreateBlogDto } from '../dto/create-blog.dto';
 import { SortPostsDto } from '../../post/dto/sort-post.input.dto';
 import { PostsQueryRepository } from '../../post/repositiories/posts-query.repository';
 import { BlogsQueryRepository } from '../repositories/blogs-query.repository';
@@ -51,10 +49,9 @@ export class GetAllPostsForBlogUseCase
       command.blogId,
       sortBy,
       sortDirection,
-      (page - 1) * size,
+      page,
       size,
     );
-    console.log('posts from requests', posts);
 
     const mappedPosts = await Promise.all(
       posts.map(async (post) => {
@@ -63,7 +60,7 @@ export class GetAllPostsForBlogUseCase
         return PostLikeOutputModelMapper(post, newestLikes, status);
       }),
     );
-    console.log('mappedPosts', mappedPosts);
+
     return {
       pagesCount: pagesCount,
       page: +page,
