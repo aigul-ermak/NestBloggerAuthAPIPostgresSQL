@@ -10,8 +10,13 @@ import { PostService } from './post.service';
 import { GetPostByIdUseCase } from './usecases/getPostByIdUseCase';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { updatePostForBlogUseCase } from './usecases/updatePostForBlogUseCase';
 
-const CommandHandlers = [CreatePostUseCase, GetPostByIdUseCase];
+const CommandHandlers = [
+  CreatePostUseCase,
+  GetPostByIdUseCase,
+  updatePostForBlogUseCase,
+];
 
 @Module({
   imports: [
