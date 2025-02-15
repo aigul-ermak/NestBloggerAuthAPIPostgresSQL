@@ -23,4 +23,25 @@ export class PostsRepository {
 
     return result.rows[0].id;
   }
+
+  async updatePost(updatePost): Promise<boolean> {
+    const { postId, title, shortDescription, content } = updatePost;
+
+    console.log('Update Post Payload:', updatePost);
+    const query = `
+    UPDATE posts
+    SET title = $1, short_description = $2, content = $3
+    WHERE id = $4
+    RETURNING id;    
+  `;
+
+    const result = await this.pool.query(query, [
+      title,
+      shortDescription,
+      content,
+      postId,
+    ]);
+
+    return result.rowCount > 0;
+  }
 }
