@@ -25,6 +25,8 @@ import { GetAllBlogsUseCaseCommand } from './usecases/getAllBlogsUseCase';
 import { CreatePostToBlogDto } from './dto/create-post-blog.dto';
 import { PostToBlogInputType } from './dto/types/postToBlogInputType';
 import { CreatePostUseCaseCommand } from '../post/usecases/createPostUseCase';
+import { UpdatePostForBlogUseCaseCommand } from '../post/usecases/updatePostForBlogUseCase';
+import { UpdatePostForBlogType } from '../post/dto/types/updatePostForBlogType';
 
 @Controller('sa/blogs')
 export class BlogSuperAdminController {
@@ -88,6 +90,28 @@ export class BlogSuperAdminController {
 
     return await this.commandBus.execute(
       new CreatePostUseCaseCommand(createdPost),
+    );
+  }
+
+  @Put(':blogId/posts/:postId')
+  @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
+  async updatePostForBlog(
+    @Param('blogId') blogId: number,
+    @Param('postId') postId: number,
+    @Body() updatePostToBlogDto: CreatePostToBlogDto,
+  ): Promise<void> {
+    // TODO add type
+    const updatePostForBlog: UpdatePostForBlogType = {
+      blogId,
+      postId,
+      title: updatePostToBlogDto.title,
+      shortDescription: updatePostToBlogDto.shortDescription,
+      content: updatePostToBlogDto.content,
+    };
+
+    return this.commandBus.execute(
+      new UpdatePostForBlogUseCaseCommand(updatePostForBlog),
     );
   }
 }
