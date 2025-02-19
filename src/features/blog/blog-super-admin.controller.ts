@@ -6,6 +6,7 @@ import {
   HttpCode,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -25,6 +26,7 @@ import { GetAllBlogsUseCaseCommand } from './usecases/getAllBlogsUseCase';
 import { CreatePostToBlogDto } from './dto/create-post-blog.dto';
 import { PostToBlogInputType } from './dto/types/postToBlogInputType';
 import { CreatePostUseCaseCommand } from '../post/usecases/createPostUseCase';
+import { DeletePostForBlogUseCaseCommand } from './usecases/deletePostByIdUseCase';
 
 @Controller('sa/blogs')
 export class BlogSuperAdminController {
@@ -88,6 +90,18 @@ export class BlogSuperAdminController {
 
     return await this.commandBus.execute(
       new CreatePostUseCaseCommand(createdPost),
+    );
+  }
+
+  @Delete(':blogId/posts/:postId')
+  @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
+  async deletePostForBlog(
+    @Param('blogId', ParseIntPipe) blogId: number,
+    @Param('postId', ParseIntPipe) postId: number,
+  ) {
+    return this.commandBus.execute(
+      new DeletePostForBlogUseCaseCommand(blogId, postId),
     );
   }
 }

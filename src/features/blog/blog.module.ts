@@ -16,6 +16,7 @@ import { PostsQueryRepository } from '../post/repositiories/posts-query.reposito
 import { GetAllPostsForBlogUseCase } from './usecases/getAllPostsForBlogUseCase';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { DeletePostForBlogUseCase } from './usecases/deletePostByIdUseCase';
 
 const CommandHandlers = [
   CreateBlogUseCase,
@@ -25,6 +26,7 @@ const CommandHandlers = [
   GetAllBlogsUseCase,
   CreatePostUseCase,
   GetAllPostsForBlogUseCase,
+  DeletePostForBlogUseCase,
 ];
 
 @Module({

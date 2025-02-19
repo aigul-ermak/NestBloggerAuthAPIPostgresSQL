@@ -23,4 +23,14 @@ export class PostsRepository {
 
     return result.rows[0].id;
   }
+
+  async deletePost(id: number): Promise<boolean> {
+    const query = `
+      DELETE FROM posts
+      WHERE id = $1;
+    `;
+    const result = await this.pool.query(query, [id]);
+
+    return result.rowCount > 0;
+  }
 }
