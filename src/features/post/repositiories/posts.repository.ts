@@ -27,7 +27,6 @@ export class PostsRepository {
   async updatePost(updatePost): Promise<boolean> {
     const { postId, title, shortDescription, content } = updatePost;
 
-    console.log('Update Post Payload:', updatePost);
     const query = `
     UPDATE posts
     SET title = $1, short_description = $2, content = $3
@@ -41,6 +40,17 @@ export class PostsRepository {
       content,
       postId,
     ]);
+
+    return result.rowCount > 0;
+  }
+  async deletePost(postId: number): Promise<boolean> {
+    const query = `
+      DELETE FROM posts
+      WHERE id = $1
+      RETURNING id;
+    `;
+
+    const result = await this.pool.query(query, [postId]);
 
     return result.rowCount > 0;
   }
