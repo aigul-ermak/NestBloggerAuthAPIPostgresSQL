@@ -8,7 +8,10 @@ WORKDIR /app
 RUN corepack enable && corepack prepare yarn@4.4.0 --activate
 
 # Copy package.json and yarn.lock for dependency installation
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock .yarnrc.yml ./
+
+# Copy the .yarn directory (contains plugins and install state)
+COPY .yarn ./.yarn
 
 # Install dependencies
 RUN yarn install
